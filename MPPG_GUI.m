@@ -48,7 +48,7 @@ function getMeasFile(source,eventdata)
     
     disp('Parsing W2CAD file...');
     %open and parse the measurement file
-    measData = readEclipseW2CAD([measPathName measFileName]);
+    measData = omniproAccessTOmat([measPathName measFileName]);
     
 end
 
