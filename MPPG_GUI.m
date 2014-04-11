@@ -58,7 +58,9 @@ function getCalcFile(source,eventdata)
         
     disp('Opening dicom file...');
     %open dicom file    
-    [ cx, cy, cz, calcData ] = dicomDoseTOmat([calcPathName calcFileName], [0 -25 0]); %should not have to hard code this, need to FIX
+    [ cx, cy, cz, calcData ] = dicomDoseTOmat([calcPathName calcFileName], [0 -25 0]); %should not have to hard code this, need to FIX\
+    %offset value represents the offset from the dicom origin to the users chosen isocenter in the plane for the given beam, or other way around
+    %prompt the user for the offset values
     
     set(calcLabel,'String',calcFileName);
 end
@@ -77,6 +79,7 @@ function runTests(source,eventdata)
         cd = interp3(cx,cy,cz,calcData,mx,mz,my); %calc'd dose profile
         
         %compute independent variable, in cm
+        %Maybe determine if the measurement is diagonal and use indep only in diag case
         indep = zeros(mns,1);
         for k = 2:mns
             %compute distance to next point, general for 3D profiles
@@ -84,8 +87,9 @@ function runTests(source,eventdata)
         end
                     
 
-        %tweak registration
-        [regMeas regCalc sh] = RegisterData([indep md], [indep cd])
+        %tweak registration, make this optional, or kick out if sh is large
+        %maybe register in 3D?
+        [regMeas regCalc sh] = RegisterData([indep md], [indep cd]);
 
         %compute gamma
         distThr = sscanf(get(posErEdit,'String'),'%f');
@@ -97,7 +101,13 @@ function runTests(source,eventdata)
 %         figure; plot(indep,cd); hold all;
 %         plot(indep,md);
 %         title(measData.BeamData(i).DataType);
-%         xlabel('position (cm)');        
+%         xlabel('position (cm)');  
+
+        %tabular format output
+        
+        %pdfs of the graphs from matlab
+        
+        %way to flip through output graphs
         
     end
     
