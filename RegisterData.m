@@ -23,7 +23,7 @@ function [regMeas regCalc sh] = RegisterData(meas, calc)
     calcInt = interp1(calc(:,1), calc(:,2), meas(:,1),'PCHIP');
     
     %ideal sample rate
-    sr = 200; %samples per cm (judgement call)
+    sr = 50; %samples per cm (judgement call)
     dist = meas(1,1) - meas(end,1); %total distance in cm
     ns = sr*abs(dist); %number of samples
     intIndep = linspace(meas(1,1),meas(end,1),ns)'; %interpolated independent var

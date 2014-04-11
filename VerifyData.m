@@ -20,7 +20,8 @@ function vOut = VerifyData(regMeas, regCalc, distThr, doseThr, plotOn)
 %   github.com/open-source-medical-devices/mppg   
     
     %distThr = 3; %mm
-    %doseThr = 0.03; %Should be percent Gray    
+    %doseThr = 0.03; %Should be percent Gray
+    doseThr = doseThr/100; %Convert from percent to decimal
     
     %Compute distance error (in mm)
     len = length(regMeas(:,1));
@@ -41,9 +42,9 @@ function vOut = VerifyData(regMeas, regCalc, distThr, doseThr, plotOn)
     
     rEThr = rE./(distThr.^2);
     if plotOn
-        figure;
-        imagesc(rEThr);
-        colorbar;
+        %figure;
+        %imagesc(rEThr);
+        %colorbar;
 
     end
     
@@ -79,24 +80,25 @@ function vOut = VerifyData(regMeas, regCalc, distThr, doseThr, plotOn)
     [gam Ir] = min(gam2); %Ir is the row index where the min gamma was found
     gam = sqrt(gam);
     
-    %%%%%Debug
-    figure;
-    plot(regMeas(:,1),regMeas(:,2)); hold all;
-    plot(regCalc(:,1),regCalc(:,2));
-    plot(regMeas(:,1),gam);
-    %get distance error at minimum gamma
-    Ic = 1:len; %make column index array
-    I = sub2ind(size(rm),Ir,Ic); %convert to linear indices
-    distMinGam = sqrt(rEThr(I)); %distance error at minimum gamma position
-    plot(regMeas(:,1),distMinGam);
-    
-    %get dose error at minimum gamma
-    doseMinGam = sqrt(dEThr(I)); %dose error at minimum gamma position
-    plot(regMeas(:,1),doseMinGam); hold off;
-    %get distance to minimum dose difference
-    [mDose IMDr] = min(dE);
-    legend('meas','calc','gam','distMinGam','doseMinGam');
-    
+    if plotOn
+        %%%%%Debug
+        figure;
+        plot(regMeas(:,1),regMeas(:,2)); hold all;
+        plot(regCalc(:,1),regCalc(:,2));
+        plot(regMeas(:,1),gam);
+        %get distance error at minimum gamma
+        Ic = 1:len; %make column index array
+        I = sub2ind(size(rm),Ir,Ic); %convert to linear indices
+        distMinGam = sqrt(rEThr(I)); %distance error at minimum gamma position
+        plot(regMeas(:,1),distMinGam);
+
+        %get dose error at minimum gamma
+        doseMinGam = sqrt(dEThr(I)); %dose error at minimum gamma position
+        plot(regMeas(:,1),doseMinGam); hold off;
+        %get distance to minimum dose difference
+        [mDose IMDr] = min(dE);
+        legend('meas','calc','gam','distMinGam','doseMinGam');
+    end
     
     %figure;
     %plot(regMeas(:,1),regMeas(:,2)); hold all;
