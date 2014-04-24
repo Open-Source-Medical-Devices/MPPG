@@ -13,6 +13,10 @@ x = 0; y = 0; z = 0; d = 0;
 
 if strcmp(type,'OPD')
 
+    % The data stored in W2CAD files is stored in mm. Convert input (cm) to
+    % mm
+    fs = fs*10;
+    
     for i = 1:struct.Num
     
         % Check DataType and FieldSize
@@ -30,6 +34,10 @@ if strcmp(type,'OPD')
 end
 
 if strcmp(type,'OPP')
+    
+    % The data stored in W2CAD files is stored in mm. Convert input to cm
+    fs = fs*10;
+    depth = depth*10;
 
     for i = 1:struct.Num
     
@@ -50,6 +58,10 @@ if strcmp(type,'OPP')
         
 end
 
+% Convert output to cm
+x = x/10;
+y = y/10;
+z = z/10;
         
     
 

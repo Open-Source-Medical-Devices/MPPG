@@ -10,8 +10,9 @@ function ReturnStruct = omniproAccessTOmat(filename,struct)
 % grand structure.
 % 
 % See also
-% [ x, y, z, d ] = getEclipseData(eclipseFileStruct,'OPD', [150 150]);
-% [ x, y, z, d ] = getEclipseData(eclipseFileStruct,'OPP', [150 150],50,'X');
+% [ x, y, z, d ] = omniproAccessTOmat(eclipseFileStruct,'OPD', [150 150]);
+% [ x, y, z, d ] = omniproAccessTOmat(eclipseFileStruct,'OPP', [150 150],50,'X');
+% [ x, y, z, d ] = omniproAccessTOmat(eclipseFileStruct,'OPP', [150 150],50,'Y');
 % This one takes your structure and gets whatever data you want out of it 
 % using the data type (OPD, OPP), field size, depth and scan direction. 
 % 
