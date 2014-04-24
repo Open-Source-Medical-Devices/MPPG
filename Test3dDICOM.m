@@ -4,8 +4,9 @@ close all;
 % Test out the reading and processesing of a Dicom File
 
 filename = '15x15_UO_000_ISO_000.dcm';
+filename = '../15x15_Dose_OFFSET_1p22_-65p29_-233p00.dcm';
 
-[ dcm_x, dcm_y, dcm_z, dcm_dose ] = dicomDoseTOmat(filename, [ 0 -30.09 0 ]);
+[ dcm_x, dcm_y, dcm_z, dcm_dose ] = dicomDoseTOmat(filename, [ 1.22 -65.29 233.0 ]/10);
 
 % I want a plane at: x = 0, y = 0 and z = 0
 xloc = 0;
