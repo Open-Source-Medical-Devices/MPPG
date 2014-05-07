@@ -5,12 +5,12 @@ close all;
 
 % filename = '15x15_UO_000_ISO_000.dcm';
 % filename = '../15x15_Dose_OFFSET_1p22_-65p29_-233p00.dcm';
-% filename = '../15x15_Dose_OFFSET_-1_-6.529_24p22_222.dcm';
+filename = '../15x15_Dose_OFFSET_0_-30p09_0_Eclipse.dcm';
 % filename = '../RT.dcm';
 
-filename = 'W:\Private\Physics\Education and Training\Residents\Physics Residents\Residents\Jacqmin_Dustin\6 - Reserach\MPPG #5\GitHub\Trilogy\20140429_10MV_Calc\5_7\RD.2.16.840.1.113669.2.931128.389215442.20140429110050.562744.dcm';
+%filename = 'W:\Private\Physics\Education and Training\Residents\Physics Residents\Residents\Jacqmin_Dustin\6 - Reserach\MPPG #5\GitHub\Trilogy\20140429_10MV_Calc\5_7\RD.2.16.840.1.113669.2.931128.389215442.20140429110050.562744.dcm';
 
-[ dcm_x, dcm_y, dcm_z, dcm_dose ] = dicomDoseTOmat(filename, [ 0+.1 -25+.2 0 ]);
+[ dcm_x, dcm_y, dcm_z, dcm_dose ] = dicomDoseTOmat(filename, [ 0 -30.09 0 ]);
 %[ dcm_x, dcm_y, dcm_z, dcm_dose ] = dicomDoseTOmat(filename, [ 0 -30 0 ]);
 % I want a plane at: x = 0, y = 0 and z = 0
 xloc = 0;
@@ -34,22 +34,20 @@ imagesc(dcm_x,dcm_y,DOSE2D)
 %% Test out the reading and processing of Acsii files from OmniPro
 
 % % Read one file from OmniPro and Create Structure
-filename = 'W:\Private\Physics\Education and Training\Residents\Physics Residents\Residents\Jacqmin_Dustin\6 - Reserach\MPPG #5\GitHub\Trilogy\20140429_10MV_Meas\5_7\P10OPN.asc';
+% filename = 'W:\Private\Physics\Education and Training\Residents\Physics Residents\Residents\Jacqmin_Dustin\6 - Reserach\MPPG #5\GitHub\Trilogy\20140429_10MV_Meas\5_7\P10OPN.asc';
+% omniproStruct = omniproAccessTOmat(filename);
 
+filename = 'P06_Open_OPP.ASC';
 omniproStruct = omniproAccessTOmat(filename);
-
  
 % % Read another file and add to previous structure
-% filename = 'P06_Open_OPP.ASC';
-% omniproStruct = omniproAccessTOmat(filename,omniproStruct);
+filename = 'P06_Open_OPD_2.ASC';
+omniproStruct = omniproAccessTOmat(filename,omniproStruct);
+
 % 
-% figure(2);
-% % Read Jeni's file from OmniPro and Create Structure
-% filename = 'P06OPN_WISC.ASC';
-% omniproStruct2 = omniproAccessTOmat(filename);
 % 
 % % Get OPD (Open field PDD) for 10x10 field (100 mm by 100 mm)
-% [ x, y, z, d ] = getOmniproAccessData(omniproStruct2,'OPD', [100 100]);
+%[ x, y, z, d ] = getOmniproAccessData(omniproStruct2,'OPD', [100 100]);
 % plot(z,d,'r')
 % hold off;
 % load('W:\Private\Physics\Eclipse\MATLAB Data\iXmeasurements.mat');
@@ -58,12 +56,12 @@ omniproStruct = omniproAccessTOmat(filename);
 %% Let's try to compare some measured profiles and some Eclipse data
 
 % Field size
-fs1 = 12;
-fs2 = 11.5;
+fs1 = 15;
+fs2 = 15;
 
 % I want a plane at: x = 0, y = 0 and z = 0
 xloc = 0; % cm
-yloc = 3.5; % cm
+yloc = 5; % cm
 zloc = 0; % cm
 
 figure(3)
