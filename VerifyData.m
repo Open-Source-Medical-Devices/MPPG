@@ -1,4 +1,4 @@
-function vOut = VerifyData(regMeas, regCalc, distThr, doseThr, plotOn)
+function [gam, distMinGam, doseMinGam] = VerifyData(regMeas, regCalc, distThr, doseThr, plotOn)
 % vOut = VerifyData(regMeas, regCalc, plotOn, distThr, doseThr)
 %   Perform 1D gamma evaluation
 %
@@ -80,25 +80,30 @@ function vOut = VerifyData(regMeas, regCalc, distThr, doseThr, plotOn)
     [gam Ir] = min(gam2); %Ir is the row index where the min gamma was found
     gam = sqrt(gam);
     
-    if plotOn
-        %%%%%Debug
-        figure;
-        plot(regMeas(:,1),regMeas(:,2)); hold all;
-        plot(regCalc(:,1),regCalc(:,2));
-        plot(regMeas(:,1),gam);
+%     if plotOn
+%         %%%%%Debug
+%         figure;
+%         plot(regMeas(:,1),regMeas(:,2)); hold all;
+%         plot(regCalc(:,1),regCalc(:,2));
+%         plot(regMeas(:,1),gam);
         %get distance error at minimum gamma
         Ic = 1:len; %make column index array
         I = sub2ind(size(rm),Ir,Ic); %convert to linear indices
         distMinGam = sqrt(rEThr(I)); %distance error at minimum gamma position
-        plot(regMeas(:,1),distMinGam);
+%         plot(regMeas(:,1),distMinGam);
 
         %get dose error at minimum gamma
         doseMinGam = sqrt(dEThr(I)); %dose error at minimum gamma position
-        plot(regMeas(:,1),doseMinGam); hold off;
+%         plot(regMeas(:,1),doseMinGam); hold off;
         %get distance to minimum dose difference
         [mDose IMDr] = min(dE);
-        legend('meas','calc','gam','distMinGam','doseMinGam');
-    end
+%         legend('meas','calc','gam','distMinGam','doseMinGam');
+%         xlabel('cm');
+%         ylabel('AU');
+        
+%         set(gcf,'PaperPositionMode','auto');
+%         print(gcf, '-dpdf', '-append', '-painters', '-r300', 'MPPG_Output_Figures.pdf'); %save a copy of the image
+%     end
     
     %figure;
     %plot(regMeas(:,1),regMeas(:,2)); hold all;
@@ -109,5 +114,4 @@ function vOut = VerifyData(regMeas, regCalc, distThr, doseThr, plotOn)
     %legend('Meas','Calc','DTE','Dose Dif','Gamma');
     %hold off;
         
-    vOut = gam;
 end

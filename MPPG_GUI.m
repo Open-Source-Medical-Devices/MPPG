@@ -34,11 +34,21 @@ posErLabel = uicontrol('Parent',guiCtrl,'Style','text','String','Position error 
 doseErEdit = uicontrol('Parent',guiCtrl,'Style','edit','String','3','BackgroundColor','w','Min',0,'Max',1,'Units','normalized','Position',[.5 .5 .25 .1],'Callback',{@getDoseErThresh});
 posErEdit = uicontrol('Parent',guiCtrl,'Style','edit','String','3','BackgroundColor','w','Min',0,'Max',1,'Units','normalized','Position',[.5 .39 .25 .1],'Callback',{@getPosErThresh});
 
+% panel to contain output checkboxes
+guiPanel = uipanel('Parent',guiCtrl,'Title','Select Output Options: ','Units','normalized','Position',[0 .15 1 .2]);
+
+% checkbox to generate a summary table
+makeTable = uicontrol('Parent',guiPanel,'Style','checkbox','Enable','on','String','Table Out','Min',0,'Max',3,'Value',3,'Units','normalized','Position',[.0 .8 .8 .25]);
+
+% checkbox to generate a pdf of the figures
+makePdf = uicontrol('Parent',guiPanel,'Style','checkbox','Enable','on','String','PDF Out','Min',0,'Max',3,'Value',3,'Units','normalized','Position',[.0 .5 .8 .25]);
+
 defaultBackground = get(0,'defaultUicontrolBackgroundColor');
 set(guiCtrl,'Color',defaultBackground);
 
 set(guiCtrl,'Visible','on');
 
+measFileName = []; %global, used for output filenames and graph titles
 measData = []; %global
 calcData = []; %global
 cx = []; cy = []; cz = []; %global
@@ -67,14 +77,18 @@ end
 
 function runTests(source,eventdata)
     
+    
+    
     %loop through each profile in measData
     for i = 1:measData.Num   
-        mx = measData.BeamData(i).X/10; %convert to cm
-        my = measData.BeamData(i).Y/10; %convert to cm
-        mz = measData.BeamData(i).Z/10; %convert to cm
+        mx = measData.BeamData(i).X; %cm
+        my = measData.BeamData(i).Y; %cm
+        mz = measData.BeamData(i).Z; %cm
         md = measData.BeamData(i).Value; %measured dose profile
         mns = measData.BeamData(i).NumPoints; %measured number of samples
-         
+        axs = measData.BeamData(i).AxisType;
+        dep = measData.BeamData(i).Depth;
+        
         %extract 1D profile from 3D calculated dose data
         cd = interp3(cx,cy,cz,calcData,mx,mz,my); %calc'd dose profile
         
@@ -94,9 +108,28 @@ function runTests(source,eventdata)
         %compute gamma
         distThr = sscanf(get(posErEdit,'String'),'%f');
         doseThr = sscanf(get(doseErEdit,'String'),'%f');
-        vOut = VerifyData(regMeas, regCalc, distThr, doseThr, 1);
+        [gam, distMinGam, doseMinGam] = VerifyData(regMeas, regCalc, distThr, doseThr, 0);
 
         %summarize results for this test
+        if get(makePdf,'Value') == 3
+            figure(100+i);
+            plot(regMeas(:,1),regMeas(:,2)); hold all;
+            plot(regCalc(:,1),regCalc(:,2));
+            plot(regMeas(:,1),gam);
+            plot(regMeas(:,1),distMinGam);
+            plot(regMeas(:,1),doseMinGam); hold off;
+            ylim([0 1.5]);
+            legend('meas','calc','gam','distMinGam','doseMinGam');
+            xlabel('cm');
+            ylabel('AU');
+            if (strcmp(axs,'Z'))
+                plotName = [measFileName ' ' axs];
+            else                
+                plotName = [measFileName ' ' axs ' ' num2str(dep)];
+            end
+            title(plotName);
+            print(gcf, '-dpdf', '-append', '-painters', '-r300', [plotName '.pdf']); %save a copy of the image
+        end
         
 %         figure; plot(indep,cd); hold all;
 %         plot(indep,md);
@@ -104,10 +137,16 @@ function runTests(source,eventdata)
 %         xlabel('position (cm)');  
 
         %tabular format output
-        
-        %pdfs of the graphs from matlab
-        
-        %way to flip through output graphs
+        if get(makeTable,'Value') == 3
+            % measured file name, 
+            % calculated filename, 
+            % max gamma, 
+            % registration offset, 
+            % dist error at max gamma, 
+            % dose error at max gamma, 
+            % pdd, cross, or inline, 
+            % position of max gamma   
+        end                
         
     end
     

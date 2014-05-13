@@ -86,9 +86,9 @@ for i = StartPos:ReturnStruct.Num
 
         if length(sscanf(line, ['<' '%f' '%f' '%f' '%f'])) == 4
             data = sscanf(line, ['<' '%f' '%f' '%f' '%f']);
-            ReturnStruct.BeamData(i).X(count) = data(1);
-            ReturnStruct.BeamData(i).Y(count) = data(2);
-            ReturnStruct.BeamData(i).Z(count) = data(3);
+            ReturnStruct.BeamData(i).X(count) = data(1)/10; %cm
+            ReturnStruct.BeamData(i).Y(count) = data(2)/10; %cm
+            ReturnStruct.BeamData(i).Z(count) = data(3)/10; %cm
             ReturnStruct.BeamData(i).Value(count) = data(4);
             count = count + 1;
         end
