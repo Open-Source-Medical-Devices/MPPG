@@ -105,6 +105,7 @@ function runTests(source,eventdata)
         %maybe register in 3D?
         [regMeas regCalc sh] = RegisterData([indep md], [indep cd]);
 
+
         %compute gamma
         distThr = sscanf(get(posErEdit,'String'),'%f');
         doseThr = sscanf(get(doseErEdit,'String'),'%f');
