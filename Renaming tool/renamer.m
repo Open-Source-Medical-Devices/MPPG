@@ -10,6 +10,7 @@
 % Dustin Jacqmin, PhD 2014
 % https://github.com/Open-Source-Medical-Devices
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+clear all;
 
 % Get current working directory, so we can return here at the end:
 currentFolder = pwd;
@@ -19,10 +20,31 @@ currentFolder = pwd;
 % Perform search in this directory
 directory = '.'; % './Renaming tool';
 
-% Change filename (0) or copy to new filename (1)
-copy2new = 0;
+% Develop the filename by including (1) or excluding (0) these parameters
+includePlanName = 1; % Water Phantom, etc.
+includeMachineName = 0; % Varian 21iX 703, etc.
+includeBeamName = 1; % 10x10, C-shape, Test 5.7, etc.
+includeBeamType = 1; % STATIC, STEP-AND-SHOOT, etc.
+includeRadiationType = 1; % PHOTON, ELECTRON, etc.
+includeEnergy = 1; % 6MV, 12MeV, etc.
+includeGantryAngle = 0; % 0deg, 180deg
+includeBeamModifier = 1; % OPEN, STANDARD-45-OUT, ??-60-IN, etc.
+includeMLC = 1; % MLCs, NOMLCs
 
 cd(directory);
+
+%% Overwrite current names to a random sequence of numbers 
+% This prevents issues associated with running this program twice in a row
+
+% Identify DICOM TYPE and store in 'files'
+files = dir('*.dcm');
+base = round(100000*rand);
+for i = 1:length(files)
+    dcm = dicominfo(files(i).name);
+    
+    movefile(files(i).name, sprintf('%s_%d.dcm', dcm.Modality, base + i));
+          
+end
 %% Identify DICOM-RT DOSE and PLAN files in directory
 
 % Identify DICOM TYPE and store in 'files'
@@ -30,24 +52,25 @@ files = dir('*.dcm');
 for i = 1:length(files)
     dcm = dicominfo(files(i).name);
     
-    str = sprintf('\n%s is a %s',files(i).name, dcm.Modality);
-    disp(str);
+%     str = sprintf('\n%s is a %s',files(i).name, dcm.Modality);
     files(i).Modality = dcm.Modality;
     
-     if strcmp(dcm.Modality,'RTDOSE')
-%          str = sprintf('%s is %s','dcm.ReferencedRTPlanSequence.Item_1.ReferencedSOPInstanceUID', dcm.ReferencedRTPlanSequence.Item_1.ReferencedSOPInstanceUID);
-%          disp(str);
-         files(i).ID = dcm.ReferencedRTPlanSequence.Item_1.ReferencedSOPInstanceUID;
-         
-     elseif strcmp(dcm.Modality,'RTPLAN')
+    % THE RTDOSE file has a 'ReferencedRTPlanSequence' identifier that
+    % contains the SOPInstanceUID for the appropriate corresponding RTPLAN
+    % file. We will store these and use them to identify pairs.
+    if strcmp(dcm.Modality,'RTDOSE')
+%         str = sprintf('%s is %s','dcm.ReferencedRTPlanSequence.Item_1.ReferencedSOPInstanceUID', dcm.ReferencedRTPlanSequence.Item_1.ReferencedSOPInstanceUID);
+%         disp(str);
+        files(i).ID = dcm.ReferencedRTPlanSequence.Item_1.ReferencedSOPInstanceUID;
+    elseif strcmp(dcm.Modality,'RTPLAN')
 %          str = sprintf('%s is %s','dcm.SOPInstanceUID', dcm.SOPInstanceUID);
 %          disp(str); 
-         files(i).ID = dcm.SOPInstanceUID;
-     end 
+        files(i).ID = dcm.SOPInstanceUID;
+    end 
       
 end
 
-% Match PLAN and DOSE
+%% Match RTPLAN and RTDOSE based on IDs
 for i = 1:length(files)
     
     if strcmp(files(i).Modality,'RTDOSE')
@@ -65,7 +88,7 @@ for i = 1:length(files)
     end
 end
 
-% Extract Plan characteristics from RT PLAN 
+%% Extract Plan characteristics from RTPLAN 
 for i = 1:length(files)
     
     dcm = dicominfo(files(i).name);
@@ -83,26 +106,75 @@ for i = 1:length(files)
         files(i).Y2 = dcm.BeamSequence.Item_1.ControlPointSequence.Item_1.BeamLimitingDevicePositionSequence.Item_2.LeafJawPositions(2);
         files(i).GantryAngle = dcm.BeamSequence.Item_1.ControlPointSequence.Item_1.GantryAngle;
         files(i).IsocenterPosition = dcm.BeamSequence.Item_1.ControlPointSequence.Item_1.IsocenterPosition;
+        if dcm.BeamSequence.Item_1.NumberOfWedges > 0
+            files(i).BeamModifier = sprintf('%s-%s',dcm.BeamSequence.Item_1.WedgeSequence.Item_1.WedgeType, dcm.BeamSequence.Item_1.WedgeSequence.Item_1.WedgeID);
+        else
+            files(i).BeamModifier = 'OPEN';
+        end
+        try
+            files(i).MLC = dcm.BeamSequence.Item_1.BeamLimitingDeviceSequence.Item_3.RTBeamLimitingDeviceType;
+        catch exception
+            files(i).MLC = 'NO-MLC';
+        end
         
-        files(i).Filename = sprintf('%s_%s_%s_%s-%s_%s.dcm','RTPLAN',files(i).PlanName, files(i).MachineName, num2str(files(i).Energy), files(i).RadiationType, files(i).BeamName);
+        % Create the new file names for RTPLAN and RTDOSE
+        file_rtplan = 'RTPLAN';
+        file_rtdose = 'RTDOSE';
+        if includePlanName == 1
+            file_rtplan = sprintf('%s_%s',file_rtplan, files(i).PlanName);
+            file_rtdose = sprintf('%s_%s',file_rtdose, files(i).PlanName);
+        end
+        if includeMachineName == 1
+            file_rtplan = sprintf('%s_%s',file_rtplan, files(i).MachineName);
+            file_rtdose = sprintf('%s_%s',file_rtdose, files(i).MachineName);
+        end
+        if includeBeamName == 1
+            file_rtplan = sprintf('%s_%s',file_rtplan, files(i).BeamName);
+            file_rtdose = sprintf('%s_%s',file_rtdose, files(i).BeamName);
+        end       
+        if includeBeamType == 1
+            file_rtplan = sprintf('%s_%s',file_rtplan, files(i).BeamType);
+            file_rtdose = sprintf('%s_%s',file_rtdose, files(i).BeamType);
+        end
+        if includeRadiationType == 1
+            file_rtplan = sprintf('%s_%s',file_rtplan, files(i).RadiationType);
+            file_rtdose = sprintf('%s_%s',file_rtdose, files(i).RadiationType);
+        end
+        if includeEnergy == 1
+            if strcmp(files(i).RadiationType,'PHOTON')
+                file_rtplan = sprintf('%s_%sMV',file_rtplan, num2str(files(i).Energy));
+                file_rtdose = sprintf('%s_%sMV',file_rtdose, num2str(files(i).Energy));
+            elseif strcmp(files(i).RadiationType,'ELECTRON')
+                file_rtplan = sprintf('%s_%sMeV',file_rtplan, num2str(files(i).Energy));
+                file_rtdose = sprintf('%s_%sMeV',file_rtdose, num2str(files(i).Energy));
+            end        
+        end
+        if includeGantryAngle == 1
+            file_rtplan = sprintf('%s_%sdeg',file_rtplan, num2str(files(i).GantryAngle));
+            file_rtdose = sprintf('%s_%sdeg',file_rtdose, num2str(files(i).GantryAngle));
+        end
+        if includeBeamModifier == 1
+            file_rtplan = sprintf('%s_%s',file_rtplan, files(i).BeamModifier);
+            file_rtdose = sprintf('%s_%s',file_rtdose, files(i).BeamModifier);
+        end
+        if includeMLC == 1
+            file_rtplan = sprintf('%s_%s',file_rtplan, files(i).MLC);
+            file_rtdose = sprintf('%s_%s',file_rtdose, files(i).MLC);
+        end
+                
+        files(i).Filename = sprintf('%s.dcm',file_rtplan);
         pID = files(i).partnerID;
-        files(pID).Filename = sprintf('%s_%s_%s_%s-%s_%s.dcm','RTDOSE',files(i).PlanName, files(i).MachineName, num2str(files(i).Energy), files(i).RadiationType, files(i).BeamName);
-        
+        files(pID).Filename = sprintf('%s.dcm',file_rtdose);
     end 
 end
 
-% Change filenames
+%% Change filenames
 for i = 1:length(files)
     if strcmp(files(i).Modality,'RTPLAN')
         pID = files(i).partnerID;
-        if copy2new == 1
-            copyfile(files(i).name, files(i).Filename);
-            copyfile(files(pID).name, files(pID).Filename);
-        else
-            movefile(files(i).name, files(i).Filename);
-            movefile(files(pID).name, files(pID).Filename);
-        end
-    end
+        movefile(files(i).name, files(i).Filename);
+        movefile(files(pID).name, files(pID).Filename);
+   end
 end
 
     
