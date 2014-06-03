@@ -1,4 +1,4 @@
-function [regMeas regCalc sh] = RegisterData(meas, calc)
+function [regMeas regCalc sh_cm] = RegisterData(meas, calc)
 
 % [regMeas regCalc sh] = RegisterData(meas, calc)
 %   Normalizes, interpolates and registers 1D measured and calculated data
@@ -10,7 +10,7 @@ function [regMeas regCalc sh] = RegisterData(meas, calc)
 %   Output:
 %       regMeas - measured data after normalization, registration and interpolation
 %       regCalc - measured data after normalization, registration and interpolation
-%       sh - number of pixels to shift, following interpolation, needed for registration
+%       sh - number of cm to shift, following interpolation, needed for registration
 %
 %   by Jeremy Bredfeldt, 2014
 %   github.com/open-source-medical-devices/mppg
@@ -63,4 +63,7 @@ function [regMeas regCalc sh] = RegisterData(meas, calc)
         sh = 0;
         
     end
+    
+    %convert shift to cm
+    sh_cm = sh/sr;
 end
