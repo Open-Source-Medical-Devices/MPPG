@@ -156,7 +156,16 @@ function runTests(source,eventdata)
         %tabular format output
         
         if get(makeTable,'Value') == 3
-            fptr = fopen('mppg_out_table.csv','a');            
+            outName = 'mppg_out_table.csv';
+            if exist(outName,'file') == 2;
+                writeHdr = 0;
+            else
+                writeHdr = 1;
+            end
+            fptr = fopen(outName,'a');            
+            if writeHdr
+                fprintf(fptr,'%s,%s,%s,%s,%s,%s,%s,%s\r\n','Measurement Filename','Calculated Filename','Axis','Depth','Max Gamma','Average Gamma','Std Dev Gamma','Optimum shift (cm)');
+            end
             % measured file name, 
             % calculated filename, 
             % max gamma, 
@@ -164,8 +173,8 @@ function runTests(source,eventdata)
             % dist error at max gamma, 
             % dose error at max gamma, 
             % pdd, cross, or inline, 
-            % position of max gamma             
-            fprintf(fptr,'%s,%s,%s,%f,%f,%f\r\n',measFileName,calcFileName,axs,dep,max(gam),sh);
+            % position of max gamma              
+            fprintf(fptr,'%s,%s,%s,%f,%f,%f,%f,%f\r\n',measFileName,calcFileName,axs,dep,max(gam),mean(gam),std(gam),sh);
             fclose(fptr);
         end                
         
