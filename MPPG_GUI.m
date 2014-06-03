@@ -49,6 +49,7 @@ set(guiCtrl,'Color',defaultBackground);
 set(guiCtrl,'Visible','on');
 
 measFileName = []; %global, used for output filenames and graph titles
+calcFileName = []; %global, used for output filenames and graph titles
 measData = []; %global
 calcData = []; %global
 cx = []; cy = []; cz = []; %global
@@ -153,7 +154,9 @@ function runTests(source,eventdata)
 %         xlabel('position (cm)');  
 
         %tabular format output
+        
         if get(makeTable,'Value') == 3
+            fptr = fopen('mppg_out_table.csv','a');            
             % measured file name, 
             % calculated filename, 
             % max gamma, 
@@ -161,7 +164,9 @@ function runTests(source,eventdata)
             % dist error at max gamma, 
             % dose error at max gamma, 
             % pdd, cross, or inline, 
-            % position of max gamma   
+            % position of max gamma             
+            fprintf(fptr,'%s,%s,%s,%f,%f,%f\r\n',measFileName,calcFileName,axs,dep,max(gam),sh);
+            fclose(fptr);
         end                
         
     end
