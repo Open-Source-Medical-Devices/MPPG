@@ -114,22 +114,37 @@ function runTests(source,eventdata)
         %summarize results for this test
         if get(makePdf,'Value') == 3
             figure(100+i);
-            plot(regMeas(:,1),regMeas(:,2)); hold all;
-            plot(regCalc(:,1),regCalc(:,2));
-            plot(regMeas(:,1),gam);
-            plot(regMeas(:,1),distMinGam);
-            plot(regMeas(:,1),doseMinGam); hold off;
-            ylim([0 1.5]);
-            legend('meas','calc','gam','distMinGam','doseMinGam');
-            xlabel('cm');
-            ylabel('AU');
             if (strcmp(axs,'Z'))
-                plotName = [measFileName ' ' axs];
+                plotTitle = [measFileName ' ' axs];
             else                
-                plotName = [measFileName ' ' axs ' ' num2str(dep)];
+                plotTitle = [measFileName ' ' axs ' ' num2str(dep)];
             end
-            title(plotName);
-            print(gcf, '-dpdf', '-append', '-painters', '-r300', [plotName '.pdf']); %save a copy of the image
+            plotName = measFileName;            
+            
+            subplot(3,1,1); plot(regMeas(:,1),regMeas(:,2)); hold all;
+            subplot(3,1,1); plot(regCalc(:,1),regCalc(:,2)); hold off;
+            xlabel('Position (cm)');
+            ylabel('Relative Dose');
+            legend('meas','calc');
+            title(plotTitle);
+            
+            subplot(3,1,2); plot(regMeas(:,1),gam);
+            ylim([0 1.5]);
+            xlabel('Position (cm)');
+            ylabel('Gamma');
+            
+            subplot(3,1,3); plot(regMeas(:,1),distMinGam); hold all;
+            subplot(3,1,3); plot(regMeas(:,1),doseMinGam); hold off;
+            ylim([0 1.5]);
+            xlabel('Position (cm)');
+            ylabel('AU');
+            legend('distMinGam','doseMinGam');
+                       
+            if i == 1
+                print(gcf, '-dpsc', '-r300', [plotName '.ps']); %save a copy of the image
+            else
+                print(gcf, '-dpsc', '-append', '-r300', [plotName '.ps']); %save a copy of the image
+            end
         end
         
 %         figure; plot(indep,cd); hold all;
