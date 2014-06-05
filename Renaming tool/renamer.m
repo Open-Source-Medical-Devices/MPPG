@@ -18,7 +18,7 @@ currentFolder = pwd;
 %% User input
 
 % Perform search in this directory
-directory = '.'; % './Renaming tool';
+directory = 'W:\Private\Physics\Sun Nuclear\ArcCHECK\Commissioning\Eclipse AAA\16x Arc Fields\DICOM'; % './Renaming tool';
 
 % Develop the filename by including (1) or excluding (0) these parameters
 includePlanName = 1; % Water Phantom, etc.
