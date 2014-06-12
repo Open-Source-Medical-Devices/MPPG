@@ -19,7 +19,7 @@ function MPPG_GUI
 clear all;
 close all;
 
-guiCtrl = figure('Resize','on','Units','pixels','Position',[100 300 500 300],'Visible','off','MenuBar','none','name','MPPG V1.0','NumberTitle','off','UserData',0);
+guiCtrl = figure('Resize','on','Units','pixels','Position',[100 300 500 300],'Visible','off','MenuBar','none','name','MPPG V1.1','NumberTitle','off','UserData',0);
 measOpenBut = uicontrol('Parent',guiCtrl,'Style','pushbutton','String','Get Measured Dose File','FontUnits','normalized','FontSize',.5,'Units','normalized','Position',[0 .9 .4 .1],'callback','ClickedCallback','Callback', {@getMeasFile});
 calcOpenBut = uicontrol('Parent',guiCtrl,'Style','pushbutton','String','Get Calculated Dose File','FontUnits','normalized','FontSize',.5,'Units','normalized','Position',[0.5 .9 .4 .1],'callback','ClickedCallback','Callback', {@getCalcFile});
 testRunBut = uicontrol('Parent',guiCtrl,'Style','pushbutton','String','Run','FontUnits','normalized','FontSize',.9,'Units','normalized','Position',[0 .0 .5 .1],'callback','ClickedCallback','Callback', {@runTests});
@@ -55,8 +55,13 @@ calcData = []; %global
 cx = []; cy = []; cz = []; %global
 
 function getMeasFile(source,eventdata)
-    [measFileName measPathName] = uigetfile({'*.ASC';'*.*'},'Select Image','MultiSelect','off');    
-    
+    mpath.measPathName = '.';
+    if exist('mpath.mat','file')
+        mpath = load('mpath.mat');
+    end
+    [measFileName measPathName] = uigetfile({'*.ASC';'*.*'},'Select Image','MultiSelect','off',mpath.measPathName );    
+    save('mpath.mat','measPathName');
+
     disp('Parsing W2CAD file...');
     %open and parse the measurement file
     measData = omniproAccessTOmat([measPathName measFileName]);
@@ -65,11 +70,16 @@ function getMeasFile(source,eventdata)
 end
 
 function getCalcFile(source,eventdata)
-    [calcFileName calcPathName] = uigetfile({'*.dcm';'*.*'},'Select Image','MultiSelect','off');
-        
+    cpath.calcPathName = '.';
+    if exist('cpath.mat','file')
+        cpath = load('cpath.mat');
+    end    
+    [calcFileName calcPathName] = uigetfile({'*.dcm';'*.*'},'Select Image','MultiSelect','off',cpath.calcPathName);
+    save('cpath.mat','calcPathName');
+    
     disp('Opening dicom file...');
     %open dicom file    
-    [ cx, cy, cz, calcData ] = dicomDoseTOmat([calcPathName calcFileName], [0 -25 0]); %should not have to hard code this, need to FIX\
+    [ cx, cy, cz, calcData ] = dicomDoseTOmat([calcPathName calcFileName], [0 -30 0]); %should not have to hard code this, need to FIX\
     %offset value represents the offset from the dicom origin to the users chosen isocenter in the plane for the given beam, or other way around
     %prompt the user for the offset values
     
