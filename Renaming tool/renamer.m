@@ -18,7 +18,8 @@ currentFolder = pwd;
 %% User input
 
 % Perform search in this directory
-directory = 'W:\Private\Physics\Sun Nuclear\ArcCHECK\Commissioning\Eclipse AAA\16x Arc Fields\DICOM'; % './Renaming tool';
+directory = 'W:\Private\Physics\Sun Nuclear\ArcCHECK\Commissioning\Eclipse AXB\RatioTest\Nominal\Dose to Water'; % './Renaming tool';
+%directory = 'W:\Private\Physics\Beam Data\TB41\Validation\TG119\Planer Dose for IMRT\Cshape 10x EZ\WP 1mm';
 
 % Develop the filename by including (1) or excluding (0) these parameters
 includePlanName = 1; % Water Phantom, etc.
@@ -104,9 +105,18 @@ for i = 1:length(files)
         beamName = dcmPlan.BeamSequence.(itemName).BeamName;
         files(i).Filename = ['RTDOSE_' beamName '.dcm'];
         movefile(files(i).name, files(i).Filename);
-    end
+    end    
 end
 
+for i = 1:length(files)
+    if strcmp(files(i).Modality,'RTPLAN')
+         dcmPlan = dicominfo(files(i).name);
+         planName = dcmPlan.RTPlanLabel;
+         files(i).Filename = ['RTPLAN_' planName '.dcm'];        
+         movefile(files(i).name, files(i).Filename);
+    end
+end
+    
 % %% Extract Plan characteristics from RTPLAN 
 % for i = 1:length(files)
 %     
