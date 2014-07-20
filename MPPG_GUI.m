@@ -31,8 +31,8 @@ gammaLabel = uicontrol('Parent',guiCtrl,'Style','text','String','Gamma calculati
 doseErLabel = uicontrol('Parent',guiCtrl,'Style','text','String','Dose error threshold (% max):','FontUnits','normalized','FontSize',.4,'Units','normalized','Position',[0 .49 .5 .1]);
 posErLabel = uicontrol('Parent',guiCtrl,'Style','text','String','Position error threshold (mm):','FontUnits','normalized','FontSize',.4,'Units','normalized','Position',[0 .39 .5 .1]);
 
-doseErEdit = uicontrol('Parent',guiCtrl,'Style','edit','String','3','BackgroundColor','w','Min',0,'Max',1,'Units','normalized','Position',[.5 .5 .25 .1],'Callback',{@getDoseErThresh});
-posErEdit = uicontrol('Parent',guiCtrl,'Style','edit','String','3','BackgroundColor','w','Min',0,'Max',1,'Units','normalized','Position',[.5 .39 .25 .1],'Callback',{@getPosErThresh});
+doseErEdit = uicontrol('Parent',guiCtrl,'Style','edit','String','2','BackgroundColor','w','Min',0,'Max',1,'Units','normalized','Position',[.5 .5 .25 .1],'Callback',{@getDoseErThresh});
+posErEdit = uicontrol('Parent',guiCtrl,'Style','edit','String','2','BackgroundColor','w','Min',0,'Max',1,'Units','normalized','Position',[.5 .39 .25 .1],'Callback',{@getPosErThresh});
 
 % panel to contain output checkboxes
 guiPanel = uipanel('Parent',guiCtrl,'Title','Select Output Options: ','Units','normalized','Position',[0 .15 1 .2]);
@@ -49,7 +49,7 @@ set(guiCtrl,'Color',defaultBackground);
 set(guiCtrl,'Visible','on');
 
 measFileName = []; %global, used for output filenames and graph titles
-calcFileName = []; %global, used for output filenames and graph titles
+doseFileName = []; %global, used for output filenames and graph titles
 measData = []; %global
 calcData = []; %global
 cx = []; cy = []; cz = []; %global
@@ -59,7 +59,7 @@ function getMeasFile(source,eventdata)
     if exist('mpath.mat','file')
         mpath = load('mpath.mat');
     end
-    [measFileName measPathName] = uigetfile({'*.ASC';'*.*'},'Select Image','MultiSelect','off',mpath.measPathName );    
+    [measFileName measPathName] = uigetfile({'*.ASC';'*.*'},'Select Measured Data','MultiSelect','off',mpath.measPathName );    
     save('mpath.mat','measPathName');
 
     disp('Parsing W2CAD file...');
@@ -70,20 +70,36 @@ function getMeasFile(source,eventdata)
 end
 
 function getCalcFile(source,eventdata)
-    cpath.calcPathName = '.';
-    if exist('cpath.mat','file')
-        cpath = load('cpath.mat');
+    dpath.dosePathName = '.';
+    if exist('dpath.mat','file')
+        dpath = load('dpath.mat');  
+        if  dpath.dosePathName == 0
+             dpath.dosePathName = '.';
+        end
     end    
-    [calcFileName calcPathName] = uigetfile({'*.dcm';'*.*'},'Select Image','MultiSelect','off',cpath.calcPathName);
-    save('cpath.mat','calcPathName');
+    [doseFileName, dosePathName] = uigetfile({'*.dcm';'*.*'},'Select DICOM-RT DOSE File','MultiSelect','off',dpath.dosePathName);
+    save('dpath.mat','dosePathName');
     
-    disp('Opening dicom file...');
-    %open dicom file    
-    [ cx, cy, cz, calcData ] = dicomDoseTOmat([calcPathName calcFileName], [0 -30 0]); %should not have to hard code this, need to FIX\
+    ppath.planPathName = '.';
+    if exist('ppath.mat','file')
+        ppath = load('ppath.mat');
+        if  ppath.planPathName == 0
+             ppath.planPathName = '.';
+        end        
+    end  
+    [planFileName, planPathName] = uigetfile({'*.dcm';'*.*'},'Select DICOM-RT PLAN File','MultiSelect','off',ppath.planPathName);
+    save('ppath.mat','planPathName');
+
+    disp('Opening DICOM-RT DOSE and PLAN files...');
+%    % Extract plan data and offset from DICOM-RT file 
+%    [ offset, planData ] = dicomPlanProcessor([dosePathName doseFileName],[planPathName planFileName]);
+
+    % Extract Dose Grid
+    [ cx, cy, cz, calcData ] = dicomDoseTOmat([dosePathName doseFileName], [0 -30.09 0]); %should not have to hard code this, need to FIX\
     %offset value represents the offset from the dicom origin to the users chosen isocenter in the plane for the given beam, or other way around
     %prompt the user for the offset values
     
-    set(calcLabel,'String',calcFileName);
+    set(calcLabel,'String',doseFileName);
 end
 
 function runTests(source,eventdata)
@@ -184,7 +200,7 @@ function runTests(source,eventdata)
             % dose error at max gamma, 
             % pdd, cross, or inline, 
             % position of max gamma              
-            fprintf(fptr,'%s,%s,%s,%f,%f,%f,%f,%f\r\n',measFileName,calcFileName,axs,dep,max(gam),mean(gam),std(gam),sh);
+            fprintf(fptr,'%s,%s,%s,%f,%f,%f,%f,%f\r\n',measFileName,doseFileName,axs,dep,max(gam),mean(gam),std(gam),sh);
             fclose(fptr);
         end                
         
