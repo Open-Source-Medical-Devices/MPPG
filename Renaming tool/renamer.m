@@ -18,7 +18,7 @@ currentFolder = pwd;
 %% User input
 
 % Perform search in this directory
-directory = 'W:\Private\Physics\Sun Nuclear\ArcCHECK\Commissioning\Eclipse AXB\RatioTest\Nominal\Dose to Water'; % './Renaming tool';
+directory = 'W:\Private\Physics\Sun Nuclear\ArcCHECK\Commissioning\Eclipse AAA\iX703\RatioTest\Nominal\249'; % './Renaming tool';
 %directory = 'W:\Private\Physics\Beam Data\TB41\Validation\TG119\Planer Dose for IMRT\Cshape 10x EZ\WP 1mm';
 
 % Develop the filename by including (1) or excluding (0) these parameters
@@ -95,25 +95,46 @@ end
 %% Go through dose files and rename them according to their beam names
 for i = 1:length(files)
     if strcmp(files(i).Modality,'RTDOSE')
-        %Get beam number
+        % Get beam number from DICOM RT DOSE
         dcmDose = dicominfo(files(i).name);
         beamNum = dcmDose.ReferencedRTPlanSequence.Item_1.ReferencedFractionGroupSequence.Item_1.ReferencedBeamSequence.Item_1.ReferencedBeamNumber;
+        
+        % Open DICOM RT PLAN for this DICOM RT DOSE file
         pID = files(i).partnerID;
         dcmPlan = dicominfo(files(pID).name);
-        %next lines are a bit tricky, using "dynamic field name" technique (itemName)
-        itemName = ['Item_' num2str(round(beamNum))];        
-        beamName = dcmPlan.BeamSequence.(itemName).BeamName;
-        files(i).Filename = ['RTDOSE_' beamName '.dcm'];
-        movefile(files(i).name, files(i).Filename);
+        
+        % In an earlier version, it was assumed that the beam number in the
+        % DICOM RT DOSE corresponded to the same item number in the DICOM
+        % RT PLAN BeamSequence. This turns out not to be true if beams are
+        % deleted during the planning process. The true corresponding field
+        % is plan.BeamSequence.BeamNumber. We will need to search for this:
+        
+        for j = 1:length(fieldnames(dcmPlan.BeamSequence))
+            itemName = ['Item_' num2str(round(j))];
+        
+            % Hello. Is this the beam you're looking for?
+            if dcmPlan.BeamSequence.(itemName).BeamNumber == beamNum
+                beamName = dcmPlan.BeamSequence.(itemName).BeamName;
+                files(i).Filename = ['RTDOSE_' beamName '.dcm'];
+                movefile(files(i).name, files(i).Filename);
+            end
+        end
     end    
 end
 
 for i = 1:length(files)
     if strcmp(files(i).Modality,'RTPLAN')
          dcmPlan = dicominfo(files(i).name);
-         planName = dcmPlan.RTPlanLabel;
-         files(i).Filename = ['RTPLAN_' planName '.dcm'];        
-         movefile(files(i).name, files(i).Filename);
+         
+        if strcmp(dcmPlan.Manufacturer,'Varian Medical Systems')
+            planName = dcmPlan.RTPlanLabel;
+        else
+            planName = dcmPlan.RTPlanName;
+        end
+        
+        files(i).Filename = ['RTPLAN_' planName '.dcm'];        
+        movefile(files(i).name, files(i).Filename);
+        break
     end
 end
     

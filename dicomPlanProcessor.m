@@ -44,6 +44,7 @@ for i = 1:length(fieldnames(pdcm.DoseReferenceSequence))
         % coordinates for the offset
         offset = pdcm.DoseReferenceSequence.(itemName).DoseReferencePointCoordinates/10; % convert to cm
         foundORIGIN = true;
+        break
     end
     
 end
