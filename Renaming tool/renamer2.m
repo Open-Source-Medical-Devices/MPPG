@@ -1,4 +1,4 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % renamer.m
 %
@@ -18,7 +18,7 @@ currentFolder = pwd;
 %% User input
 
 % Perform search in this directory
-directory = 'W:\Private\Physics\Sun Nuclear\ArcCHECK\Commissioning\Eclipse AAA\iX703\RatioTest\Nominal\249'; % './Renaming tool';
+directory = 'W:\Private\Physics\Sun Nuclear\ArcCHECK\Commissioning\Eclipse AAA\iX703\RatioTest\259 PMMA'; % './Renaming tool';
 %directory = 'W:\Private\Physics\Beam Data\TB41\Validation\TG119\Planer Dose for IMRT\Cshape 10x EZ\WP 1mm';
 
 % Develop the filename by including (1) or excluding (0) these parameters

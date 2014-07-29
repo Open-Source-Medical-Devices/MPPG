@@ -20,7 +20,7 @@ deps = double(info.NumberOfFrames);
 % this isn't clear, but may have to do with the way the TPS makers
 % implement their dose grids.
 x = (info.ImagePositionPatient(1) + info.PixelSpacing(1)*(0:(cols-1)))/10 - offset(1);% - info.PixelSpacing(1)/2/10; 
-y = (info.ImagePositionPatient(2) + info.PixelSpacing(2)*(0:(rows-1)))/10 - offset(2) - info.PixelSpacing(2)/2/10;
+y = (info.ImagePositionPatient(2) + info.PixelSpacing(2)*(0:(rows-1)))/10 - offset(2);% - info.PixelSpacing(2)/2/10;
 z = (info.ImagePositionPatient(3) + info.GridFrameOffsetVector)/10 - offset(3);
 
 % Remove 4th Dimension from Dose Grid
