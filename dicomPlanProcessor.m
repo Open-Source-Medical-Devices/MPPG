@@ -1,4 +1,4 @@
-function [offset, planData ] = dicomPlanProcessor(dosefile, planfile)
+function [ planData ] = dicomPlanProcessor(dosefile, planfile)
 
 % Open DICOM-RT DOSE and check type
 ddcm = dicominfo(dosefile);
@@ -10,12 +10,10 @@ end
 % Get Reference RT Plan Sequence
 RRPS = ddcm.ReferencedRTPlanSequence.Item_1.ReferencedSOPInstanceUID;
 
-planData = 0;
-
 % Open DICOM-RT PLAN and check type
 pdcm = dicominfo(planfile);
 
-if ~strcmp(ddcm.Modality,'RTPLAN')
+if ~strcmp(pdcm.Modality,'RTPLAN')
     disp('Warning: File selected for DICOM PLAN is not a DICOM PLAN file.');
 end
 
@@ -51,9 +49,9 @@ end
 
 % Check to see if the ORIGIN was found.
 if foundORIGIN
-    disp('A POI called ORIGIN was found. We will assume that this is the scanning tank origin and use it for the dicom offset.');
+    disp('A POI called ORIGIN was found. We will assume that this is the scanning tank origin and use it for the dicom offset. Location: [ %.2f %.2f %.2f ]', offset(1),offset(2),offset(3));
 else
-    disp('A POI called ORIGIN was not found. DICOM coordinate offset is defaulting to [ 0, -30.09, 0 ]');
+    disp('A POI called ORIGIN was not found. DICOM coordinate offset is defaulting to [ 0 -30.09 0 ]');
     offset = [ 0 -30.09 0 ];
 end
 
@@ -62,4 +60,5 @@ itemName = ['Item_' num2str(round(beamNum))];
 isocenter = pdcm.BeamSequence.(itemName).ControlPointSequence.Item_1.IsocenterPosition;
 
 % A placeholder for extracted plan data.
-planData = 0;
+planData.iso = isocenter;
+planData.ORIGIN = offset;

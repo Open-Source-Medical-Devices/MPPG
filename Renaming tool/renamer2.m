@@ -18,11 +18,11 @@ currentFolder = pwd;
 %% User input
 
 % Perform search in this directory
-directory = 'W:\Private\Physics\Sun Nuclear\ArcCHECK\Commissioning\Eclipse AAA\iX703\RatioTest\259 PMMA'; % './Renaming tool';
+directory = 'W:\Private\Physics\Sun Nuclear\ArcCHECK\Commissioning\Eclipse AAA\TB41\RatioTest 206 New IVDT'; % './Renaming tool';
 %directory = 'W:\Private\Physics\Beam Data\TB41\Validation\TG119\Planer Dose for IMRT\Cshape 10x EZ\WP 1mm';
 
 % Develop the filename by including (1) or excluding (0) these parameters
-includePlanName = 0; % Water Phantom, etc.
+includePlanName = 1; % Water Phantom, etc.
 includeMachineName = 0; % Varian 21iX 703, etc.
 includeBeamName = 1; % 10x10, C-shape, Test 5.7, etc.
 includeBeamType = 0; % STATIC, STEP-AND-SHOOT, etc.
@@ -199,6 +199,7 @@ end
 
 for i = 1:length(files)
     if strcmp(files(i).Modality,'RTPLAN')
+        dcmPlan = dicominfo(files(i).name);
         
         files(i).TPS = dcmPlan.Manufacturer;
         if strcmp(files(i).TPS,'Varian Medical Systems')

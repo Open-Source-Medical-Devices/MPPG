@@ -50,6 +50,7 @@ set(guiCtrl,'Visible','on');
 
 measFileName = []; %global, used for output filenames and graph titles
 doseFileName = []; %global, used for output filenames and graph titles
+planFileName = []; %global, used for output filenames and graph titles
 measData = []; %global
 calcData = []; %global
 cx = []; cy = []; cz = []; %global
@@ -92,10 +93,10 @@ function getCalcFile(source,eventdata)
 
     disp('Opening DICOM-RT DOSE and PLAN files...');
 %    % Extract plan data and offset from DICOM-RT file 
-%    [ offset, planData ] = dicomPlanProcessor([dosePathName doseFileName],[planPathName planFileName]);
+%    [ planData ] = dicomPlanProcessor([dosePathName doseFileName],[planPathName planFileName]);
 
     % Extract Dose Grid
-    [ cx, cy, cz, calcData ] = dicomDoseTOmat([dosePathName doseFileName], [0 -30.09 0]); %should not have to hard code this, need to FIX\
+    [ cx, cy, cz, calcData ] = dicomDoseTOmat([dosePathName doseFileName], [ 0 -30.2478 0 ]); %should not have to hard code this, need to FIX\
     %offset value represents the offset from the dicom origin to the users chosen isocenter in the plane for the given beam, or other way around
     %prompt the user for the offset values
     
