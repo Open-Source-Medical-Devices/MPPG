@@ -10,7 +10,7 @@ function renamer_GUI
 % 3. Renames them with more descriptive names
 % 4. Allows all this to be done using a convenient GUI
 %
-% Dustin Jacqmin, PhD 2014
+% Dustin Jacqmin, PhD & Jeremy Bredfeldt, 2014
 % https://github.com/Open-Source-Medical-Devices
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -322,7 +322,7 @@ renamerPathName = [];
                         itemName = ['Item_' num2str(round(j))];
 
                         % Hello. Is this the beam you're looking for?
-                        if dcmPlan.BeamSequence.(itemName).BeamNumber == files(1).beamNum
+                        if dcmPlan.BeamSequence.(itemName).BeamNumber == files(i).beamNum
 
                             files(i).MachineName = dcmPlan.BeamSequence.(itemName).TreatmentMachineName;
                             files(i).BeamName = dcmPlan.BeamSequence.(itemName).BeamName;

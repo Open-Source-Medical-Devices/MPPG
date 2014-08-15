@@ -1,4 +1,4 @@
-function [gam, distMinGam, doseMinGam] = VerifyData(regMeas, regCalc, distThr, doseThr, plotOn)
+function [gam, distMinGam, doseMinGam] = VerifyData(regMeas, regCalc, distThr, doseThr, globAna, plotOn)
 % vOut = VerifyData(regMeas, regCalc, plotOn, distThr, doseThr)
 %   Perform 1D gamma evaluation
 %
@@ -7,6 +7,7 @@ function [gam, distMinGam, doseMinGam] = VerifyData(regMeas, regCalc, distThr, d
 %       regCalc - col 1 = position (cm), col 2 = calculated dose values
 %       distThr - Gamma calc distance threshold in mm
 %       doseThr - Gamma calc dose threshold in %
+%       globAna - Global vs. Local dose difference analysis
 %       plotOn - Plot flag to be verbose with plotting
 %
 %   Output:
@@ -58,8 +59,11 @@ function [gam, distMinGam, doseMinGam] = VerifyData(regMeas, regCalc, distThr, d
     
     %figure;
     %imagesc(Drc);
-    
-    dE = (Drm-Drc).^2;
+    if (globAna)
+        dE = ((Drm-Drc)/1).^2;
+    else
+        dE = ((Drm-Drc) ./ Drm).^2;
+    end
     
     %figure;
     %imagesc(dE);

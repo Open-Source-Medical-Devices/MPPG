@@ -20,7 +20,7 @@ function [regMeas regCalc sh_cm] = RegisterData(meas, calc)
     calc(:,2) = calc(:,2)/max(calc(:,2));
     
     %match up the resolution by interpolation
-    calcInt = interp1(calc(:,1), calc(:,2), meas(:,1),'PCHIP');
+    %calcInt = interp1(calc(:,1), calc(:,2), meas(:,1),'PCHIP');
     
     %ideal sample rate
     sr = 50; %samples per cm (judgement call)
@@ -51,11 +51,11 @@ function [regMeas regCalc sh_cm] = RegisterData(meas, calc)
         regMeas = [intIndep(1:end-abs(sh)) measInt(1:end-abs(sh))];
         regCalc = [intIndep(1:end-abs(sh)) calcIntShft(1:end-abs(sh))];
         
-    catch exception 
+    catch  
         
         % Tell user about exception
-        disp('RegisterData function error: It is possible that xcorr() threw an exception because the Signal Processing Toolbox is not installed in this version of MATLAB');
-        disp('Proceeding without automated registration');
+        % disp('RegisterData function error: It is possible that xcorr() threw an exception because the Signal Processing Toolbox is not installed in this version of MATLAB');
+        % disp('Proceeding without automated registration');
         
         % Return unshifted data
         regMeas = [ intIndep measInt ];
@@ -63,6 +63,8 @@ function [regMeas regCalc sh_cm] = RegisterData(meas, calc)
         sh = 0;
         
     end
+    
+    
     
     %convert shift to cm
     sh_cm = sh/sr;
