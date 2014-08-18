@@ -33,6 +33,9 @@ calcFileLabel = uicontrol('Parent',guiCtrl,'Style','text','String','DICOM-RT DOS
 calcStatusLabel = uicontrol('Parent',guiCtrl,'Style','text','String','DICOM Status: None','HorizontalAlignment','left','FontUnits','normalized','FontSize',.2,'Units','normalized','Position',[.02 .58 .95 .15]);
 offsetLabel = uicontrol('Parent',guiCtrl,'Style','text','String','DICOM Offset: None','HorizontalAlignment','center','FontUnits','normalized','FontSize',.6,'FontWeight','bold','Units','normalized','Position',[.02 .53 .95 .05]);
 
+% Create edit DICOM Offset Button
+offsetBut = uicontrol('Parent',guiCtrl,'Style','pushbutton','String','Edit DICOM Offset ...','FontUnits','normalized','FontSize',.4,'Units','normalized','Position',[0.77 .54 .2 .05],'callback','ClickedCallback','Callback', {@editOffset});
+
 %%-%% Create Panels for Options
 PDDPanel = uibuttongroup('Parent',guiCtrl,'Title','Depth-Dose Normalization Options: ','Units','normalized','Position', [.02 .33 .46 .19]);
 profilePanel = uibuttongroup('Parent',guiCtrl,'Title','Profile Normalization Options: ','Units','normalized','Position',[.52 .33 .46 .19]);
@@ -91,8 +94,10 @@ set(guiCtrl,'Visible','on');
 
 measFileName = []; %global, used for output filenames and graph titles
 doseFileName = []; %global, used for output filenames and graph titles
+dosePathName = []; %global, used for output filenames
 measData = []; %global
 calcData = []; %global
+planData = []; %global
 cx = []; cy = []; cz = []; %global
 
 function getMeasFile(source,eventdata)
@@ -278,6 +283,108 @@ function runTests(source,eventdata)
     
     
 end
+
+function editOffset(source,eventdata)
+    % EDITOFFSET Edit DICOM offset and reload DICOM-RT DOSE
+    
+    set(calcStatusLabel,'String','DICOM Status: None');
+    set(offsetLabel,'String', 'DICOM Offset: None');
+    
+    % Establish global variables:
+    offsetCtrl = [];
+    xOffsetEdit = [];
+    yOffsetEdit = [];
+    zOffsetEdit = [];
+    
+    x = [];
+    y = [];
+    z = [];
+
+    % Assume offset is invalid
+    invalidOffset = true;
+    
+    % While the offset is invalid: Open a window and wait until the user
+    % enters values and closes the window. Check to see if the values are
+    % valid. If so, continue. If not, try again.
+    while(invalidOffset)
+        openOffsetWindow();
+        waitfor(offsetCtrl);
+                
+        invalidOffset = isInvalidOffset();
+        
+    end
+    
+    % Return the dicom offset as a value called ORIGIN in the planData
+    % structure
+    planData.ORIGIN = [x y z];
+    planData.STATUS = 'DICOM offset edited manually by the user.';
+    
+    % Reload DICOM-RT DOSE
+    [ cx, cy, cz, calcData ] = dicomDoseTOmat([dosePathName doseFileName], planData.ORIGIN); 
+    
+    set(calcStatusLabel,'String',sprintf('DICOM Status: %s',planData.STATUS));
+    set(offsetLabel,'String',sprintf('DICOM Offset: (%.3f, %.3f, %.3f)',planData.ORIGIN(1),planData.ORIGIN(2),planData.ORIGIN(3)));
+    
+    function openOffsetWindow()
+    
+        %%% Create a window for DICOM offset entry
+        offsetCtrl = figure('Resize','off','Units','pixels','Position',[100 300 300 200],'Visible','off','MenuBar','none','name','Enter DICOM Offset...','NumberTitle','off','UserData',0);
+
+        xOffsetEdit = uicontrol('Parent',offsetCtrl,'Style','edit','String','0','FontUnits','normalized','FontSize',.4,'BackgroundColor','w','Min',0,'Max',1,'Units','normalized','Position',[.12 .35 .2 .2]);
+        yOffsetEdit = uicontrol('Parent',offsetCtrl,'Style','edit','String','0','FontUnits','normalized','FontSize',.4,'BackgroundColor','w','Min',0,'Max',1,'Units','normalized','Position',[.44 .35 .2 .2]);
+        zOffsetEdit = uicontrol('Parent',offsetCtrl,'Style','edit','String','0','FontUnits','normalized','FontSize',.4,'BackgroundColor','w','Min',0,'Max',1,'Units','normalized','Position',[.76 .35 .2 .2]);
+
+        xLabel = uicontrol('Parent',offsetCtrl,'Style','text','String','X:','FontUnits','normalized','FontSize',.5,'Units','normalized','Position',[.03 .33 .08 .2]);
+        yLabel = uicontrol('Parent',offsetCtrl,'Style','text','String','Y:','FontUnits','normalized','FontSize',.5,'Units','normalized','Position',[.35 .33 .08 .2]);
+        zLabel = uicontrol('Parent',offsetCtrl,'Style','text','String','Z:','FontUnits','normalized','FontSize',.5,'Units','normalized','Position',[.67 .33 .08 .2]);
+
+        requestLabel = uicontrol('Parent',offsetCtrl,'Style','text','String','Please enter the DICOM offset location in [cm]:','FontUnits','normalized','FontSize',.4,'Units','normalized','Position',[.1 .7 .8 .2]);
+
+        okBut = uicontrol('Parent',offsetCtrl,'Style','pushbutton','String','Submit DICOM Offset','FontUnits','normalized','FontSize',.4,'Units','normalized','Position',[.1 .05 .8 .2],'Callback', {@getOffsetVals});
+
+        defaultBackground = get(0,'defaultUicontrolBackgroundColor');
+        set(offsetCtrl,'Color',defaultBackground);    
+
+        set(xOffsetEdit,'String','0');
+        set(yOffsetEdit,'String','0');
+        set(zOffsetEdit,'String','0');           
+        set(offsetCtrl,'Visible','on');
+        
+    end
+    
+    function getOffsetVals(source,eventdata)
+        
+       x = sscanf(get(xOffsetEdit,'String'),'%f');
+       y = sscanf(get(yOffsetEdit,'String'),'%f');
+       z = sscanf(get(zOffsetEdit,'String'),'%f');
+              
+       close(offsetCtrl)
+           
+    end
+
+    function TF = isInvalidOffset()
+        % ISINVALIDOFFSET This function checks the x, y and z values
+        % returned from getOffsetVals to determine if any of them are
+        % invalid doubles, which cannot be used.
+        
+        % Assume they are all doubles:
+        TF = false;
+        
+        if isempty(x); TF = true; end
+        if isempty(y); TF = true; end
+        if isempty(z); TF = true; end        
+        if ~isa(x,'double'); TF = true; end
+        if ~isa(y,'double'); TF = true; end
+        if ~isa(z,'double'); TF = true; end
+            
+        if (TF)
+            h = msgbox(sprintf('One or more entered values could not be converted to numbers. Please try again:\n\n x = %f, y = %f, z = %f',x,y,z));
+            waitfor(h);
+        end
+    end
+
+end
+
 
 %==============================================
 %==============================================
