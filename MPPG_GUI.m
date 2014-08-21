@@ -68,9 +68,9 @@ InlineZProf = uicontrol('Parent',NormPanel,'Style','text','String','Inline (Z) =
 InlineCmProf = uicontrol('Parent',NormPanel,'Style','text','String','cm','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.93 .11 .06 .3]);
 InlinePosProf = uicontrol('Parent',NormPanel,'Style','edit','Enable','off','String','0.0','BackgroundColor','w','FontUnits','normalized','FontSize',.5,'Min',0,'Max',1,'Units','normalized','Position',[.82 .10 .1 .35]);
 
-CrosslineXProf = uicontrol('Parent',NormPanel,'Style','text','String','Crossline (X) =','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.35 .12 .15 .3]);
-CrosslineCmProf = uicontrol('Parent',NormPanel,'Style','text','String','cm','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.61 .12 .06 .3]);
-CrosslinePosProf = uicontrol('Parent',NormPanel,'Style','edit','Enable','off','String','0.0','BackgroundColor','w','FontUnits','normalized','FontSize',.5,'Min',0,'Max',1,'Units','normalized','Position',[.5 .11 .1 .35]);
+CrosslineXProf = uicontrol('Parent',NormPanel,'Style','text','String','Crossline (X) =','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.35 .11 .15 .3]);
+CrosslineCmProf = uicontrol('Parent',NormPanel,'Style','text','String','cm','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.61 .11 .06 .3]);
+CrosslinePosProf = uicontrol('Parent',NormPanel,'Style','edit','Enable','off','String','0.0','BackgroundColor','w','FontUnits','normalized','FontSize',.5,'Min',0,'Max',1,'Units','normalized','Position',[.5 .10 .1 .35]);
  
 
 
