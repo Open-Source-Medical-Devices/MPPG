@@ -1,4 +1,4 @@
-function [regMeas, regCalc, sh_cm] = RegisterData(meas, calc)
+function [regMeas regCalc sh_cm] = RegisterData(meas, calc)
 
 % [regMeas regCalc sh] = RegisterData(meas, calc)
 %   Normalizes, interpolates and registers 1D measured and calculated data
@@ -14,34 +14,26 @@ function [regMeas, regCalc, sh_cm] = RegisterData(meas, calc)
 %
 %   by Jeremy Bredfeldt, 2014
 %   github.com/open-source-medical-devices/mppg
-
-%%%   Eliminated: This is done in PrepareData now
-%     %normalize, *** this should be fixed with a proper cal factor
-%     meas(:,2) = meas(:,2)/max(meas(:,2));
-%     calc(:,2) = calc(:,2)/max(calc(:,2));
-
-%%%   Eliminated: This is done in PrepareData now
-%     % match up the resolution by interpolation
-%     calcInt = interp1(calc(:,1), calc(:,2), meas(:,1),'PCHIP');
-
-%%%   Eliminated: This is done in PrepareData now
-%     %ideal sample rate
-%     sr = 50; %samples per cm (judgement call)
-%     dist = meas(1,1) - meas(end,1); %total distance in cm
-%     ns = sr*abs(dist); %number of samples
-%     intIndep = linspace(meas(1,1),meas(end,1),ns)'; %interpolated independent var
-%     
-%     %interpolate measured data
-%     measInt = interp1(meas(:,1), meas(:,2), intIndep, 'PCHIP');
-%     
-%     %interoplate calc data
-%     calcInt = interp1(calc(:,1), calc(:,2), intIndep, 'PCHIP');
     
-    % Reformulate variables for attempt to use xcorr
-    intIndep = meas(:,1);
-    measInt = meas(:,2);
-    calcInt = calc(:,2);
-    sr = 1/(intIndep(2) - intIndep(1));
+    %normalize, *** this should be fixed with a proper cal factor
+    meas(:,2) = meas(:,2)/max(meas(:,2));
+    calc(:,2) = calc(:,2)/max(calc(:,2));
+    
+    %match up the resolution by interpolation
+    %calcInt = interp1(calc(:,1), calc(:,2), meas(:,1),'PCHIP');
+    
+    %ideal sample rate
+    sr = 50; %samples per cm (judgement call)
+    dist = meas(1,1) - meas(end,1); %total distance in cm
+    ns = sr*abs(dist); %number of samples
+    intIndep = linspace(meas(1,1),meas(end,1),ns)'; %interpolated independent var
+    
+    %interpolate measured data
+    measInt = interp1(meas(:,1), meas(:,2), intIndep, 'PCHIP');
+    
+    %interoplate calc data
+    calcInt = interp1(calc(:,1), calc(:,2), intIndep, 'PCHIP');
+    
     
     try % to use xcorr
  

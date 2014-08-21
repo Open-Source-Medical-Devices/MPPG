@@ -138,7 +138,7 @@ function getMeasFile(source,eventdata)
         if strcmp(measData.BeamData(i).AxisType,'X'); numC = numC + 1;
         elseif strcmp(measData.BeamData(i).AxisType,'Y'); numI = numI + 1;
         elseif strcmp(measData.BeamData(i).AxisType,'Z'); numP = numP + 1;
-        else  numO = numO + 1;
+        else numO = numO + 1;
         end
     end
     
@@ -189,25 +189,70 @@ function runTests(source,eventdata)
         my = measData.BeamData(i).Y; %cm
         mz = measData.BeamData(i).Z; %cm
         md = measData.BeamData(i).Value; %measured dose profile
-        mns = measData.BeamData(i).NumPoints; %measured number of samples
         axs = measData.BeamData(i).AxisType;
         dep = measData.BeamData(i).Depth;
         
-        %extract 1D profile from 3D calculated dose data
-        cd = interp3(cx,cy,cz,calcData,mx,mz,my); %calc'd dose profile
-        
-        %compute independent variable, in cm
-        %Maybe determine if the measurement is diagonal and use indep only in diag case
-        indep = zeros(mns,1);
-        for k = 2:mns
-            %compute distance to next point, general for 3D profiles
-            indep(k) = indep(k-1) + sqrt((mx(k)-mx(k-1))^2 + (my(k)-my(k-1))^2 + (mz(k)-mz(k-1))^2);
-        end
-                    
+%         %extract 1D profile from 3D calculated dose data
+%         cd = interp3(cx,cy,cz,calcData,mx,mz,my); %calc'd dose profile
+%         
+%         %compute independent variable, in cm
+%         %Maybe determine if the measurement is diagonal and use indep only in diag case
+%         indep = zeros(mns,1);
+%         for k = 2:mns
+%             %compute distance to next point, general for 3D profiles
+%             indep(k) = indep(k-1) + sqrt((mx(k)-mx(k-1))^2 + (my(k)-my(k-1))^2 + (mz(k)-mz(k-1))^2);
+%         end
 
-        %tweak registration, make this optional, or kick out if sh is large
-        %maybe register in 3D?
-        [regMeas, regCalc, sh] = RegisterData([indep md], [indep cd]);
+        % Use user preferences to determine normalization location
+        if mz(1) ~= mz(end)
+            % The depth of the measurement changes, so the profile must
+            % have some depth dose component. Normalization based on PDD
+            % normalization preferences:
+            if get(depthButPDD,'Value')
+                normLoc = sscanf(get(DepthPosPDD,'String'),'%f');
+            else
+                normLoc = 'dmax';
+            end
+            
+            % Set x-label for plots
+            norm_dim = 'Y';
+            m_xlabel = 'Depth (Y) [cm]';
+            
+        elseif mx(1) ~= mx(end)
+            % The x position of the measurement changes, so the profile must
+            % have some crossline profile component. Normalization based
+            % on crossline normalization preferences:
+            if get(posButProf,'Value')
+                normLoc = sscanf(get(CrosslinePosProf,'String'),'%f');
+            else
+                normLoc = 'dmax';
+            end
+            
+            % Set x-label for plots
+            norm_dim = 'X';
+            m_xlabel = 'Crossline Position (X) [cm]';
+            
+        elseif my(1) ~= my(end)
+            % The y position of the measurement changes, so the profile must
+            % have some inline profile component. Normalization based
+            % on inline normalization preferences:
+            if get(posButProf,'Value')
+                normLoc = sscanf(get(InlinePosProf,'String'),'%f');
+            else
+                normLoc = 'dmax';
+            end
+            
+            % Set x-label for plots
+            norm_dim = 'Z';           
+            m_xlabel = 'Inline Position (Z) [cm]';
+        end
+            
+
+        [indep, md, cd] = PrepareData(mx, my, mz, md, cx, cy, cz, calcData, normLoc);
+
+        % tweak registration, make this optional, or kick out if sh is large
+        % maybe register in 3D?
+        [regMeas, regCalc, sh] = RegisterData([indep'  md'], [indep' cd']);
 
 
         %compute gamma
@@ -223,31 +268,53 @@ function runTests(source,eventdata)
         %summarize results for this test
         if get(makePdf,'Value') == 3
             figure(100+i);
-            if (strcmp(axs,'Z'))
-                plotTitle = [measFileName ' ' axs];
-            else                
-                plotTitle = [measFileName ' ' axs ' ' num2str(dep)];
+            
+            if strcmp(axs,'X');
+                plotTitle = sprintf('Crossline Profiles at Depth (Y) = %.2f cm, Inline Position (Z) = %.2f cm',mz(1),my(1));
+                if strcmp('dmax',normLoc); plotTitle = sprintf('%s\nProfiles normalized at maximum dose location for each profile',plotTitle);
+                else plotTitle = sprintf('%s\nProfiles normalized at %s = %.2f cm',plotTitle,norm_dim,normLoc);
+                end
+            elseif strcmp(axs,'Y')
+                plotTitle = sprintf('Inline Profiles at Depth (Y) = %.2f cm, Crossline Position (X) = %.2f cm',mz(1),mx(1));
+                if strcmp('dmax',normLoc); plotTitle = sprintf('%s\nProfiles normalized at maximum dose location for each profile',plotTitle);
+                else plotTitle = sprintf('%s\nProfiles normalized at %s = %.2f cm',plotTitle,norm_dim,normLoc);
+                end
+            elseif strcmp(axs,'Z')
+                plotTitle = sprintf('Depth-Dose Profiles at Crossline Position (X) = %.2f cm, Inline Position (Y) = %.2f cm',mx(1),mz(1));
+                if strcmp('dmax',normLoc); plotTitle = sprintf('%s\nProfiles normalized at maximum dose location for each profile',plotTitle);
+                else plotTitle = sprintf('%s\nProfiles normalized at %s = %.2f cm',plotTitle,norm_dim,normLoc);
+                end
+            else 
+                plotTitle = sprintf('Diagonal Profiles from (%.2f,%.2f,%.2f) to (%.2f,%.2f,%.2f)',mx(1),mz(1),my(1),mx(end),mz(end),my(end));
+                if strcmp('dmax',normLoc); plotTitle = sprintf('%s\nProfiles normalized at maximum dose location for each profile',plotTitle);
+                else plotTitle = sprintf('%s\nProfiles normalized at %s = %.2f cm',plotTitle,norm_dim,normLoc);
+                end
             end
+
             plotName = measFileName;            
             
             subplot(3,1,1); plot(regMeas(:,1),regMeas(:,2)); hold all;
             subplot(3,1,1); plot(regCalc(:,1),regCalc(:,2)); hold off;
-            xlabel('Position (cm)');
+            xlabel(m_xlabel);
             ylabel('Relative Dose');
-            legend('meas','calc');
+            legend('Measured','TPS');
+            axis([ regMeas(1,1) regMeas(end,1) 0 1.01*max( [ max(regCalc(:,2)) max(regMeas(:,2)) ] ) ]);
             title(plotTitle);
             
             subplot(3,1,2); plot(regMeas(:,1),gam);
             ylim([0 1.5]);
-            xlabel('Position (cm)');
+            xlabel(m_xlabel);
             ylabel('Gamma');
+            axis([ regMeas(1,1) regMeas(end,1) 0 1.5 ]);
             
             subplot(3,1,3); plot(regMeas(:,1),distMinGam); hold all;
             subplot(3,1,3); plot(regMeas(:,1),doseMinGam); hold off;
             ylim([0 1.5]);
-            xlabel('Position (cm)');
+            xlabel(m_xlabel);
             ylabel('AU');
             legend('distMinGam','doseMinGam');
+            axis([ regMeas(1,1) regMeas(end,1) 0 1.5 ]);
+
                        
             if i == 1
                 print(gcf, '-dpsc', '-r300', [plotName '.ps']); %save a copy of the image
@@ -339,9 +406,9 @@ function editOffset(source,eventdata)
         %%% Create a window for DICOM offset entry
         offsetCtrl = figure('Resize','off','Units','pixels','Position',[100 300 300 200],'Visible','off','MenuBar','none','name','Enter DICOM Offset...','NumberTitle','off','UserData',0);
 
-        xOffsetEdit = uicontrol('Parent',offsetCtrl,'Style','edit','String','0','FontUnits','normalized','FontSize',.4,'BackgroundColor','w','Min',0,'Max',1,'Units','normalized','Position',[.12 .35 .2 .2]);
-        yOffsetEdit = uicontrol('Parent',offsetCtrl,'Style','edit','String','0','FontUnits','normalized','FontSize',.4,'BackgroundColor','w','Min',0,'Max',1,'Units','normalized','Position',[.44 .35 .2 .2]);
-        zOffsetEdit = uicontrol('Parent',offsetCtrl,'Style','edit','String','0','FontUnits','normalized','FontSize',.4,'BackgroundColor','w','Min',0,'Max',1,'Units','normalized','Position',[.76 .35 .2 .2]);
+        xOffsetEdit = uicontrol('Parent',offsetCtrl,'Style','edit','FontUnits','normalized','FontSize',.4,'BackgroundColor','w','Min',0,'Max',1,'Units','normalized','Position',[.12 .35 .2 .2]);
+        yOffsetEdit = uicontrol('Parent',offsetCtrl,'Style','edit','FontUnits','normalized','FontSize',.4,'BackgroundColor','w','Min',0,'Max',1,'Units','normalized','Position',[.44 .35 .2 .2]);
+        zOffsetEdit = uicontrol('Parent',offsetCtrl,'Style','edit','FontUnits','normalized','FontSize',.4,'BackgroundColor','w','Min',0,'Max',1,'Units','normalized','Position',[.76 .35 .2 .2]);
 
         xLabel = uicontrol('Parent',offsetCtrl,'Style','text','String','X:','FontUnits','normalized','FontSize',.5,'Units','normalized','Position',[.03 .33 .08 .2]);
         yLabel = uicontrol('Parent',offsetCtrl,'Style','text','String','Y:','FontUnits','normalized','FontSize',.5,'Units','normalized','Position',[.35 .33 .08 .2]);
@@ -354,9 +421,9 @@ function editOffset(source,eventdata)
         defaultBackground = get(0,'defaultUicontrolBackgroundColor');
         set(offsetCtrl,'Color',defaultBackground);    
 
-        set(xOffsetEdit,'String','0');
-        set(yOffsetEdit,'String','0');
-        set(zOffsetEdit,'String','0');           
+        set(xOffsetEdit,'String',sprintf('%.2f',planData.ORIGIN(1)));
+        set(yOffsetEdit,'String',sprintf('%.2f',planData.ORIGIN()));
+        set(zOffsetEdit,'String',sprintf('%.2f',planData.ORIGIN(3)));
         set(offsetCtrl,'Visible','on');
         
     end
@@ -406,8 +473,6 @@ end
 
 function toggleXZedit(hObject, eventdata, handles)
         
-        dmaxButProf
-
     if get(dmaxButProf,'Value')
         set(InlinePosProf,'Enable','off');
         set(CrosslinePosProf,'Enable','off');
