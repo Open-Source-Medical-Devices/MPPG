@@ -19,6 +19,9 @@ function MPPG_GUI
 clear all;
 close all;
 
+%Add current directory to matlab search path
+addpath(pwd);
+
 % MPPG Window
 guiCtrl = figure('Resize','on','Units','pixels','Position',[200 300 700 500],'Visible','off','MenuBar','none','name','MPPG V2.0','NumberTitle','off','UserData',0);
 
@@ -366,98 +369,18 @@ function editOffset(source,eventdata)
     set(calcStatusLabel,'String','DICOM Status: None');
     set(offsetLabel,'String', 'DICOM Offset: None');
     
-    % Establish global variables:
-    offsetCtrl = [];
-    xOffsetEdit = [];
-    yOffsetEdit = [];
-    zOffsetEdit = [];
+    planData = dicomProcessor(dosePathName, doseFileName);
     
-    x = [];
-    y = [];
-    z = [];
+    disp('Opening DICOM-RT Dose...');
 
-    % Assume offset is invalid
-    invalidOffset = true;
-    
-    % While the offset is invalid: Open a window and wait until the user
-    % enters values and closes the window. Check to see if the values are
-    % valid. If so, continue. If not, try again.
-    while(invalidOffset)
-        openOffsetWindow();
-        waitfor(offsetCtrl);
-                
-        invalidOffset = isInvalidOffset();
-        
-    end
-    
-    % Return the dicom offset as a value called ORIGIN in the planData
-    % structure
-    planData.ORIGIN = [x y z];
-    planData.STATUS = 'DICOM offset edited manually by the user.';
-    
-    % Reload DICOM-RT DOSE
+    % Extract Dose Grid
     [ cx, cy, cz, calcData ] = dicomDoseTOmat([dosePathName doseFileName], planData.ORIGIN); 
+    %offset value represents the offset from the dicom origin to the users chosen isocenter in the plane for the given beam, or other way around
+    %prompt the user for the offset values
     
+    set(calcFileLabel,'String',sprintf('DICOM-RT DOSE File: %s',doseFileName));
     set(calcStatusLabel,'String',sprintf('DICOM Status: %s',planData.STATUS));
-    set(offsetLabel,'String',sprintf('DICOM Offset: (%.3f, %.3f, %.3f)',planData.ORIGIN(1),planData.ORIGIN(2),planData.ORIGIN(3)));
-    
-    function openOffsetWindow()
-    
-        %%% Create a window for DICOM offset entry
-        offsetCtrl = figure('Resize','off','Units','pixels','Position',[100 300 300 200],'Visible','off','MenuBar','none','name','Enter DICOM Offset...','NumberTitle','off','UserData',0);
-
-        xOffsetEdit = uicontrol('Parent',offsetCtrl,'Style','edit','FontUnits','normalized','FontSize',.4,'BackgroundColor','w','Min',0,'Max',1,'Units','normalized','Position',[.12 .35 .2 .2]);
-        yOffsetEdit = uicontrol('Parent',offsetCtrl,'Style','edit','FontUnits','normalized','FontSize',.4,'BackgroundColor','w','Min',0,'Max',1,'Units','normalized','Position',[.44 .35 .2 .2]);
-        zOffsetEdit = uicontrol('Parent',offsetCtrl,'Style','edit','FontUnits','normalized','FontSize',.4,'BackgroundColor','w','Min',0,'Max',1,'Units','normalized','Position',[.76 .35 .2 .2]);
-
-        xLabel = uicontrol('Parent',offsetCtrl,'Style','text','String','X:','FontUnits','normalized','FontSize',.5,'Units','normalized','Position',[.03 .33 .08 .2]);
-        yLabel = uicontrol('Parent',offsetCtrl,'Style','text','String','Y:','FontUnits','normalized','FontSize',.5,'Units','normalized','Position',[.35 .33 .08 .2]);
-        zLabel = uicontrol('Parent',offsetCtrl,'Style','text','String','Z:','FontUnits','normalized','FontSize',.5,'Units','normalized','Position',[.67 .33 .08 .2]);
-
-        requestLabel = uicontrol('Parent',offsetCtrl,'Style','text','String','Please enter the DICOM offset location in [cm]:','FontUnits','normalized','FontSize',.4,'Units','normalized','Position',[.1 .7 .8 .2]);
-
-        okBut = uicontrol('Parent',offsetCtrl,'Style','pushbutton','String','Submit DICOM Offset','FontUnits','normalized','FontSize',.4,'Units','normalized','Position',[.1 .05 .8 .2],'Callback', {@getOffsetVals});
-
-        defaultBackground = get(0,'defaultUicontrolBackgroundColor');
-        set(offsetCtrl,'Color',defaultBackground);    
-
-        set(xOffsetEdit,'String',sprintf('%.2f',planData.ORIGIN(1)));
-        set(yOffsetEdit,'String',sprintf('%.2f',planData.ORIGIN()));
-        set(zOffsetEdit,'String',sprintf('%.2f',planData.ORIGIN(3)));
-        set(offsetCtrl,'Visible','on');
-        
-    end
-    
-    function getOffsetVals(source,eventdata)
-        
-       x = sscanf(get(xOffsetEdit,'String'),'%f');
-       y = sscanf(get(yOffsetEdit,'String'),'%f');
-       z = sscanf(get(zOffsetEdit,'String'),'%f');
-              
-       close(offsetCtrl)
-           
-    end
-
-    function TF = isInvalidOffset()
-        % ISINVALIDOFFSET This function checks the x, y and z values
-        % returned from getOffsetVals to determine if any of them are
-        % invalid doubles, which cannot be used.
-        
-        % Assume they are all doubles:
-        TF = false;
-        
-        if isempty(x); TF = true; end
-        if isempty(y); TF = true; end
-        if isempty(z); TF = true; end        
-        if ~isa(x,'double'); TF = true; end
-        if ~isa(y,'double'); TF = true; end
-        if ~isa(z,'double'); TF = true; end
-            
-        if (TF)
-            h = msgbox(sprintf('One or more entered values could not be converted to numbers. Please try again:\n\n x = %f, y = %f, z = %f',x,y,z));
-            waitfor(h);
-        end
-    end
+    set(offsetLabel,'String',sprintf('DICOM Offset: (%.3f, %.3f, %.3f)',planData.ORIGIN(1),planData.ORIGIN(2),planData.ORIGIN(3)));    
 
 end
 
