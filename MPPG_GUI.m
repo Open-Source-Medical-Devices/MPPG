@@ -20,7 +20,9 @@ clear all;
 close all;
 
 %Add current directory to matlab search path
-addpath(pwd);
+if ~isdeployed %if this is not an EXE instance of the program, then add path
+    addpath(pwd);
+end
 
 % MPPG Window
 guiCtrl = figure('Resize','on','Units','pixels','Position',[200 300 700 500],'Visible','off','MenuBar','none','name','MPPG V2.0','NumberTitle','off','UserData',0);
