@@ -1,6 +1,29 @@
-function doseData = fncAskForOffset(doseData)
+function doseData = fncAskForOffset(doseData,x0,y0,z0)
     % FNCASKFOROFFSET In the event the DICOM offset cannot be found
     % automatically, the function will ask the user to enter one manually.
+    % The user may specify x0, y0, z0 for the input boxes.
+    
+    if nargin == 4
+        % Assume x0,y0,z0 are all doubles:
+        TF = false;
+
+        if isempty(x0); TF = true; end
+        if isempty(y0); TF = true; end
+        if isempty(z0); TF = true; end        
+        if ~isa(x0,'double'); TF = true; end
+        if ~isa(y0,'double'); TF = true; end
+        if ~isa(z0,'double'); TF = true; end
+        
+        if (TF)
+            x0 = 0;
+            y0 = 0;
+            z0 = 0;
+        end
+    else
+        x0 = 0;
+        y0 = 0;
+        z0 = 0;
+    end    
     
     % Establish global variables:
     offsetCtrl = [];
@@ -19,7 +42,7 @@ function doseData = fncAskForOffset(doseData)
     % enters values and closes the window. Check to see if the values are
     % valid. If so, continue. If not, try again.
     while(invalidOffset)
-        openOffsetWindow();
+        openOffsetWindow(x0,y0,z0);
         waitfor(offsetCtrl);
                 
         invalidOffset = isInvalidOffset();
@@ -31,7 +54,7 @@ function doseData = fncAskForOffset(doseData)
     doseData.ORIGIN = [x y z];
     doseData.STATUS = sprintf('%s Offset entered manually by the user.', doseData.STATUS);
     
-    function openOffsetWindow()
+    function openOffsetWindow(x0,y0,z0)
     
         %%% Create a window for DICOM offset entry
         offsetCtrl = figure('Resize','off','Units','pixels','Position',[100 300 300 200],'Visible','off','MenuBar','none','name','Enter DICOM Offset...','NumberTitle','off','UserData',0);
@@ -51,9 +74,9 @@ function doseData = fncAskForOffset(doseData)
         defaultBackground = get(0,'defaultUicontrolBackgroundColor');
         set(offsetCtrl,'Color',defaultBackground);    
 
-        set(xOffsetEdit,'String','0');
-        set(yOffsetEdit,'String','0');
-        set(zOffsetEdit,'String','0');           
+        set(xOffsetEdit,'String',sprintf('%.2f',x0));
+        set(yOffsetEdit,'String',sprintf('%.2f',y0));
+        set(zOffsetEdit,'String',sprintf('%.2f',z0));           
         set(offsetCtrl,'Visible','on');
         
     end

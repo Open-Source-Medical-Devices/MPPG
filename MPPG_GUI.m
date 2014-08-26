@@ -371,8 +371,9 @@ function editOffset(source,eventdata)
     set(calcStatusLabel,'String','DICOM Status: None');
     set(offsetLabel,'String', 'DICOM Offset: None');
     
-    planData = dicomProcessor(dosePathName, doseFileName);
-    
+    planData = fncAskForOffset(planData,planData.ORIGIN(1),planData.ORIGIN(2),planData.ORIGIN(3));
+    planData.STATUS = 'DICOM offset edited manually by the user.';
+
     disp('Opening DICOM-RT Dose...');
 
     % Extract Dose Grid
