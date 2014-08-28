@@ -90,7 +90,7 @@ end
 
 % Resample indep with the same range but a finer spacing
 SAMP_PER_CM = 50; % samples per cm
-idm_range = idm(end)-idm(1);
+idm_range = abs(idm(end)-idm(1));
 PTS = floor(SAMP_PER_CM*idm_range); %number of samples
 indep = linspace(idm(1),idm(end),PTS);
 

@@ -97,3 +97,5 @@ for i = StartPos:ReturnStruct.Num
     end
 
 end
+
+fclose(fid);

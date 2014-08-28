@@ -69,15 +69,13 @@ posButProf = uicontrol('Style','radiobutton','String','Position (X,Z)','Units','
 % % Create some labels
 normToProf = uicontrol('Parent',NormPanel2,'Style','text','String',sprintf('Normalize Inline and Crossline Profiles To:'),'HorizontalAlignment','left','FontUnits','normalized','FontSize',.45,'Units','normalized','Position',[.50 .57 .2 .35]);
 
-InlineZProf = uicontrol('Parent',NormPanel,'Style','text','String','Inline (Z) =','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.7 .11 .13 .3]);
-InlineCmProf = uicontrol('Parent',NormPanel,'Style','text','String','cm','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.93 .11 .06 .3]);
-InlinePosProf = uicontrol('Parent',NormPanel,'Style','edit','Enable','off','String','0.0','BackgroundColor','w','FontUnits','normalized','FontSize',.5,'Min',0,'Max',1,'Units','normalized','Position',[.82 .10 .1 .35]);
-
 CrosslineXProf = uicontrol('Parent',NormPanel,'Style','text','String','Crossline (X) =','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.35 .11 .15 .3]);
 CrosslineCmProf = uicontrol('Parent',NormPanel,'Style','text','String','cm','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.61 .11 .06 .3]);
 CrosslinePosProf = uicontrol('Parent',NormPanel,'Style','edit','Enable','off','String','0.0','BackgroundColor','w','FontUnits','normalized','FontSize',.5,'Min',0,'Max',1,'Units','normalized','Position',[.5 .10 .1 .35]);
- 
 
+InlineZProf = uicontrol('Parent',NormPanel,'Style','text','String','Inline (Z) =','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.7 .11 .13 .3]);
+InlineCmProf = uicontrol('Parent',NormPanel,'Style','text','String','cm','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.93 .11 .06 .3]);
+InlinePosProf = uicontrol('Parent',NormPanel,'Style','edit','Enable','off','String','0.0','BackgroundColor','w','FontUnits','normalized','FontSize',.5,'Min',0,'Max',1,'Units','normalized','Position',[.82 .10 .1 .35]);
 
 %-% Gamma Options
 doseErLabel = uicontrol('Parent',gammaPanel,'Style','text','String','Dose Diff. (%):','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.05 .65 .3 .25]);
@@ -285,7 +283,7 @@ function runTests(source,eventdata)
                 else plotTitle = sprintf('%s\nProfiles normalized at %s = %.2f cm',plotTitle,norm_dim,normLoc);
                 end
             elseif strcmp(axs,'Z')
-                plotTitle = sprintf('Depth-Dose Profiles at Crossline Position (X) = %.2f cm, Inline Position (Y) = %.2f cm',mx(1),mz(1));
+                plotTitle = sprintf('Depth-Dose Profiles at Crossline Position (X) = %.2f cm, Inline Position (Z) = %.2f cm',mx(1),my(1));
                 if strcmp('dmax',normLoc); plotTitle = sprintf('%s\nProfiles normalized at maximum dose location for each profile',plotTitle);
                 else plotTitle = sprintf('%s\nProfiles normalized at %s = %.2f cm',plotTitle,norm_dim,normLoc);
                 end
@@ -303,14 +301,14 @@ function runTests(source,eventdata)
             xlabel(m_xlabel);
             ylabel('Relative Dose');
             legend('Measured','TPS');
-            axis([ regMeas(1,1) regMeas(end,1) 0 1.01*max( [ max(regCalc(:,2)) max(regMeas(:,2)) ] ) ]);
+            axis([ min(regMeas(:,1)) max(regMeas(:,1)) 0 1.01*max( [ max(regCalc(:,2)) max(regMeas(:,2)) ] ) ]);
             title(plotTitle);
             
             subplot(3,1,2); plot(regMeas(:,1),gam);
             ylim([0 1.5]);
             xlabel(m_xlabel);
             ylabel('Gamma');
-            axis([ regMeas(1,1) regMeas(end,1) 0 1.5 ]);
+            axis([ min(regMeas(:,1)) max(regMeas(:,1)) 0 1.5 ]);
             
             subplot(3,1,3); plot(regMeas(:,1),distMinGam); hold all;
             subplot(3,1,3); plot(regMeas(:,1),doseMinGam); hold off;
@@ -318,7 +316,7 @@ function runTests(source,eventdata)
             xlabel(m_xlabel);
             ylabel('AU');
             legend('distMinGam','doseMinGam');
-            axis([ regMeas(1,1) regMeas(end,1) 0 1.5 ]);
+            axis([ min(regMeas(:,1)) max(regMeas(:,1)) 0 1.5 ]);
 
                        
             if i == 1
