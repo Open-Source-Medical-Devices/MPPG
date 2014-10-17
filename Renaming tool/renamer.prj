@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment-project plugin="plugin.deploytool" plugin-version="1.0">
+  <configuration target="target.standalone.win" target-name="Windows Standalone Application" name="renamer" location="W:\Private\Physics\Education and Training\Residents\Physics Residents\Residents\Jacqmin_Dustin\6 - Reserach\MPPG #5\GitHub\MPPG\Renaming tool" file="W:\Private\Physics\Education and Training\Residents\Physics Residents\Residents\Jacqmin_Dustin\6 - Reserach\MPPG #5\GitHub\MPPG\Renaming tool\renamer.prj" build-checksum="2696859380">
+    <param.project.name>W:\Private\Physics\Education and Training\Residents\Physics Residents\Residents\Jacqmin_Dustin\6 - Reserach\MPPG #5\GitHub\MPPG\Renaming tool\renamer.prj</param.project.name>
+    <param.target.type>Windows Standalone Application</param.target.type>
+    <param.appname>DICOM_Renamer</param.appname>
+    <param.intermediate>W:\Private\Physics\MATLAB Apps\renamer\src</param.intermediate>
+    <param.output>W:\Private\Physics\MATLAB Apps\renamer\distrib</param.output>
+    <param.embed.ctf>true</param.embed.ctf>
+    <param.tbx_on_path>
+      <item>all</item>
+    </param.tbx_on_path>
+    <param.warnings>
+      <warning.fullpath>on</warning.fullpath>
+      <warning.duplicate>on</warning.duplicate>
+      <warning.option.ignored>on</warning.option.ignored>
+      <warning.libname>on</warning.libname>
+      <warning.demo>on</warning.demo>
+    </param.warnings>
+    <param.version>1.0</param.version>
+    <param.user.only.registration>false</param.user.only.registration>
+    <param.c.cpp.options.file />
+    <param.include.dirs />
+    <param.lib.dirs />
+    <param.lib.files />
+    <param.defines />
+    <param.undefines />
+    <param.debug>false</param.debug>
+    <param.share.mcr>false</param.share.mcr>
+    <param.disable.jvm>false</param.disable.jvm>
+    <param.disable.display>false</param.disable.display>
+    <param.create.log>false</param.create.log>
+    <param.log.file />
+    <param.user.defined.mcr.options />
+    <unset>
+      <param.project.name />
+      <param.target.type />
+      <param.embed.ctf />
+      <param.tbx_on_path />
+      <param.warnings />
+      <param.version />
+      <param.user.only.registration />
+      <param.c.cpp.options.file />
+      <param.include.dirs />
+      <param.lib.dirs />
+      <param.lib.files />
+      <param.defines />
+      <param.undefines />
+      <param.debug />
+      <param.share.mcr />
+      <param.disable.jvm />
+      <param.disable.display />
+      <param.create.log />
+      <param.log.file />
+      <param.user.defined.mcr.options />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}\renamer_GUI.m</file>
+    </fileset.main>
+    <fileset.resources />
+    <fileset.package />
+    <build-deliverables>
+      <file name="DICOM_Renamer.exe" location="W:\Private\Physics\MATLAB Apps\renamer\distrib" optional="false">W:\Private\Physics\MATLAB Apps\renamer\distrib\DICOM_Renamer.exe</file>
+      <file name="readme.txt" location="W:\Private\Physics\MATLAB Apps\renamer\distrib" optional="true">W:\Private\Physics\MATLAB Apps\renamer\distrib\readme.txt</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>C:\Program Files\MATLAB\R2012b</root>
+      <path>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\demos</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\graph2d</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\graph3d</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\graphics</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\plottools</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\scribe</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\specgraph</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\uitools</directory>
+        <directory>${MATLAB_ROOT}\toolbox\local</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\optimfun</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\codetools</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\datafun</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\datamanager</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\datatypes</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\elfun</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\elmat</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\funfun</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\general</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\guide</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\helptools</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\iofun</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\lang</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\matfun</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\ops</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\polyfun</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\randfun</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\sparfun</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\specfun</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\strfun</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\timefun</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\verctrl</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\winfun</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\winfun\net</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\apps</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\audiovideo</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\comparisons</directory>
+        <directory>${MATLAB_ROOT}\toolbox\compiler</directory>
+        <directory>${MATLAB_ROOT}\toolbox\compiler\compilerdemos</directory>
+        <directory>${MATLAB_ROOT}\toolbox\images\colorspaces</directory>
+        <directory>${MATLAB_ROOT}\toolbox\images\images</directory>
+        <directory>${MATLAB_ROOT}\toolbox\images\imuitools</directory>
+        <directory>${MATLAB_ROOT}\toolbox\images\iptformats</directory>
+        <directory>${MATLAB_ROOT}\toolbox\images\iptutils</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\imagesci</directory>
+        <directory>${MATLAB_ROOT}\toolbox\images\imdemos</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\instrument</directory>
+        <directory>${MATLAB_ROOT}\toolbox\sam\m3i</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\asynciolib</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\coder\coder</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\controllib\general</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\controllib\graphics</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\controllib\graphics\utils</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\controllib\graphics\plotoptions</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\dastudio</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\imageslib</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\multimedia</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\rptgen</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\siglib</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\spcuilib</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\testmeaslib\general</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\testmeaslib\graphics</directory>
+        <directory>${MATLAB_ROOT}\toolbox\shared\simulink</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\system</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\timeseries</directory>
+        <directory>${MATLAB_ROOT}\toolbox\matlab\hds</directory>
+      </path>
+    </matlab>
+    <platform>
+      <unix>false</unix>
+      <mac>false</mac>
+      <windows>true</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>6.1</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>win64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
+

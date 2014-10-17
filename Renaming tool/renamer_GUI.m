@@ -170,7 +170,7 @@ renamerPathName = [];
 
         % Identify DICOM TYPE and store in 'files'
         files = dir('*.dcm');
-        base = round(1000000*rand);
+        base = round(1000000*now);
         for i = 1:length(files)
             dcm = dicominfo(files(i).name);
             movefile(files(i).name, sprintf('%s_%d.dcm', dcm.Modality, base + i));
@@ -378,6 +378,8 @@ renamerPathName = [];
                             
                         end
                         
+                        % Remove slashes:
+                        file_rtdose(regexp(file_rtdose,'[\,/]')) = [];
                         files(i).Filename = file_rtdose;
                     end
                 end
@@ -423,6 +425,8 @@ renamerPathName = [];
                 % Force RTPLAN to include Plan Name
                 file_rtplan = sprintf('%s_%s',file_rtplan, files(i).PlanName);
                 
+                % Remove slashes:
+                file_rtplan(regexp(file_rtplan,'[\,/]')) = [];
                 files(i).Filename = file_rtplan;
             end
         end
