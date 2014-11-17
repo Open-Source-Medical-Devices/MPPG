@@ -342,7 +342,7 @@ function runTests(source,eventdata)
             end
             fptr = fopen(outName,'a');            
             if writeHdr
-                fprintf(fptr,'%s,%s,%s,%s,%s,%s,%s,%s\r\n','Measurement Filename','Calculated Filename','Axis','Depth','Max Gamma','Average Gamma','Std Dev Gamma','Optimum shift (cm)');
+                fprintf(fptr,'%s,%s,%s,%s,%s,%s,%s,%s,%s\r\n','Measurement Filename','Calculated Filename','Axis','Depth','Max Gamma','Average Gamma','Std Dev Gamma','Passing Rate (%)','Optimum shift (cm)');
             end
             % measured file name, 
             % calculated filename, 
@@ -351,8 +351,15 @@ function runTests(source,eventdata)
             % dist error at max gamma, 
             % dose error at max gamma, 
             % pdd, cross, or inline, 
-            % position of max gamma              
-            fprintf(fptr,'%s,%s,%s,%f,%f,%f,%f,%f\r\n',measFileName,doseFileName,axs,dep,max(gam),mean(gam),std(gam),sh);
+            % position of max gamma
+            pass_cts = 0;
+            for gg = 1:length(gam)
+                if gam(gg) <= 1
+                    pass_cts = pass_cts + 1;
+                end
+            end
+            
+            fprintf(fptr,'%s,%s,%s,%f,%f,%f,%f,%f,%f\r\n',measFileName,doseFileName,axs,dep,max(gam),mean(gam),std(gam),pass_cts/length(gam)*100,sh);
             fclose(fptr);
         end                
         
