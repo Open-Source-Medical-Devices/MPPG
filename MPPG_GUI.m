@@ -296,22 +296,22 @@ function runTests(source,eventdata)
 
             plotName = measFileName;            
             
-            subplot(3,1,1); plot(regMeas(:,1),regMeas(:,2)); hold all;
-            subplot(3,1,1); plot(regCalc(:,1),regCalc(:,2)); hold off;
+            subplot(3,1,1); plot(regMeas(:,1),regMeas(:,2),'b','Linewidth',2); hold all;
+            subplot(3,1,1); plot(regCalc(:,1),regCalc(:,2),'r--','Linewidth',2); hold off;
             xlabel(m_xlabel);
             ylabel('Relative Dose');
             legend('Measured','TPS');
             axis([ min(regMeas(:,1)) max(regMeas(:,1)) 0 1.01*max( [ max(regCalc(:,2)) max(regMeas(:,2)) ] ) ]);
             title(plotTitle);
             
-            subplot(3,1,2); plot(regMeas(:,1),gam);
+            subplot(3,1,2); plot(regMeas(:,1),gam,'b','Linewidth',2);
             ylim([0 1.5]);
             xlabel(m_xlabel);
             ylabel('Gamma');
             axis([ min(regMeas(:,1)) max(regMeas(:,1)) 0 1.5 ]);
             
-            subplot(3,1,3); plot(regMeas(:,1),distMinGam); hold all;
-            subplot(3,1,3); plot(regMeas(:,1),doseMinGam); hold off;
+            subplot(3,1,3); plot(regMeas(:,1),distMinGam,'b','Linewidth',2); hold all;
+            subplot(3,1,3); plot(regMeas(:,1),doseMinGam,'r--','Linewidth',2); hold off;
             ylim([0 1.5]);
             xlabel(m_xlabel);
             ylabel('AU');
