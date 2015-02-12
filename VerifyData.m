@@ -1,4 +1,4 @@
-function [gam, distMinGam, doseMinGam] = VerifyData(regMeas, regCalc, distThr, doseThr, globAna, plotOn)
+function [gam, distMinGam, doseMinGam, pass_rt] = VerifyData(regMeas, regCalc, distThr, doseThr, globAna, plotOn)
 % vOut = VerifyData(regMeas, regCalc, plotOn, distThr, doseThr)
 %   Perform 1D gamma evaluation
 %
@@ -109,6 +109,9 @@ function [gam, distMinGam, doseMinGam] = VerifyData(regMeas, regCalc, distThr, d
 %         print(gcf, '-dpdf', '-append', '-painters', '-r300', 'MPPG_Output_Figures.pdf'); %save a copy of the image
 %     end
     
+    %Compute the gamma passing rate
+    pass_rt = 100*sum(gam<=1)/length(gam);
+
     %figure;
     %plot(regMeas(:,1),regMeas(:,2)); hold all;
     %plot(regCalc(:,1),regCalc(:,2));

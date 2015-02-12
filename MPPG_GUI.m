@@ -266,57 +266,63 @@ function runTests(source,eventdata)
         else
         	globAna = false;
         end
-        [gam, distMinGam, doseMinGam] = VerifyData(regMeas, regCalc, distThr, doseThr, globAna, false);
+        [gam, distMinGam, doseMinGam, pass_rt] = VerifyData(regMeas, regCalc, distThr, doseThr, globAna, false);
 
         %summarize results for this test
         if get(makePdf,'Value') == 3
-            figure(100+i);
+            scrsz = get(0,'ScreenSize');
+            figure('Position',[1 + i*20 scrsz(4)/3 scrsz(3)/4 scrsz(4)/2]);            
             
+            [~, name, ~] = fileparts(doseFileName);
+            plotName = name;  %This will be the name of the pdf that is saved
+            name = strrep(name,'_','\_');
+            plotTitle = sprintf('%s\n',name);            
             if strcmp(axs,'X');
-                plotTitle = sprintf('Crossline Profiles at Depth (Y) = %.2f cm, Inline Position (Z) = %.2f cm',mz(1),my(1));
+                plotTitle = sprintf('%sCrossline Profiles at Depth (Y) = %.2f cm, Inline Position (Z) = %.2f cm',plotTitle,mz(1),my(1));
                 if strcmp('dmax',normLoc); plotTitle = sprintf('%s\nProfiles normalized at maximum dose location for each profile',plotTitle);
                 else plotTitle = sprintf('%s\nProfiles normalized at %s = %.2f cm',plotTitle,norm_dim,normLoc);
                 end
             elseif strcmp(axs,'Y')
-                plotTitle = sprintf('Inline Profiles at Depth (Y) = %.2f cm, Crossline Position (X) = %.2f cm',mz(1),mx(1));
+                plotTitle = sprintf('%sInline Profiles at Depth (Y) = %.2f cm, Crossline Position (X) = %.2f cm',plotTitle,mz(1),mx(1));
                 if strcmp('dmax',normLoc); plotTitle = sprintf('%s\nProfiles normalized at maximum dose location for each profile',plotTitle);
                 else plotTitle = sprintf('%s\nProfiles normalized at %s = %.2f cm',plotTitle,norm_dim,normLoc);
                 end
             elseif strcmp(axs,'Z')
-                plotTitle = sprintf('Depth-Dose Profiles at Crossline Position (X) = %.2f cm, Inline Position (Z) = %.2f cm',mx(1),my(1));
+                plotTitle = sprintf('%sDepth-Dose Profiles at Crossline Position (X) = %.2f cm, Inline Position (Z) = %.2f cm',plotTitle,mx(1),my(1));
                 if strcmp('dmax',normLoc); plotTitle = sprintf('%s\nProfiles normalized at maximum dose location for each profile',plotTitle);
                 else plotTitle = sprintf('%s\nProfiles normalized at %s = %.2f cm',plotTitle,norm_dim,normLoc);
                 end
             else 
-                plotTitle = sprintf('Diagonal Profiles from (%.2f,%.2f,%.2f) to (%.2f,%.2f,%.2f)',mx(1),mz(1),my(1),mx(end),mz(end),my(end));
+                plotTitle = sprintf('%sDiagonal Profiles from (%.2f,%.2f,%.2f) to (%.2f,%.2f,%.2f)',plotTitle,mx(1),mz(1),my(1),mx(end),mz(end),my(end));
                 if strcmp('dmax',normLoc); plotTitle = sprintf('%s\nProfiles normalized at maximum dose location for each profile',plotTitle);
                 else plotTitle = sprintf('%s\nProfiles normalized at %s = %.2f cm',plotTitle,norm_dim,normLoc);
                 end
-            end
-
-            plotName = measFileName;            
+            end                       
             
+            rM_max = max(regMeas(:,1));
+            rM_min = min(regMeas(:,1));
             subplot(3,1,1); plot(regMeas(:,1),regMeas(:,2),'b','Linewidth',2); hold all;
             subplot(3,1,1); plot(regCalc(:,1),regCalc(:,2),'r--','Linewidth',2); hold off;
             xlabel(m_xlabel);
             ylabel('Relative Dose');
             legend('Measured','TPS');
-            axis([ min(regMeas(:,1)) max(regMeas(:,1)) 0 1.01*max( [ max(regCalc(:,2)) max(regMeas(:,2)) ] ) ]);
+            axis([ rM_min rM_max 0 1.01*max( [ max(regCalc(:,2)) max(regMeas(:,2)) ] ) ]);
             title(plotTitle);
             
             subplot(3,1,2); plot(regMeas(:,1),gam,'b','Linewidth',2);
-            ylim([0 1.5]);
+            %ylim([0 1.5]);
             xlabel(m_xlabel);
             ylabel('Gamma');
-            axis([ min(regMeas(:,1)) max(regMeas(:,1)) 0 1.5 ]);
+            text(rM_min+((rM_max-rM_min)/2),1.2,['Pass rate: ' sprintf('%0.1f',pass_rt) '%'],'BackgroundColor',[.9 .9 .9],'HorizontalAlignment','center');
+            axis([ rM_min rM_max 0 1.5 ]);
             
             subplot(3,1,3); plot(regMeas(:,1),distMinGam,'b','Linewidth',2); hold all;
             subplot(3,1,3); plot(regMeas(:,1),doseMinGam,'r--','Linewidth',2); hold off;
-            ylim([0 1.5]);
+            %ylim([0 1.5]);
             xlabel(m_xlabel);
             ylabel('AU');
             legend('distMinGam','doseMinGam');
-            axis([ min(regMeas(:,1)) max(regMeas(:,1)) 0 1.5 ]);
+            axis([ rM_min rM_max 0 1.5 ]);
 
                        
             if i == 1
@@ -352,14 +358,8 @@ function runTests(source,eventdata)
             % dose error at max gamma, 
             % pdd, cross, or inline, 
             % position of max gamma
-            pass_cts = 0;
-            for gg = 1:length(gam)
-                if gam(gg) <= 1
-                    pass_cts = pass_cts + 1;
-                end
-            end
             
-            fprintf(fptr,'%s,%s,%s,%f,%f,%f,%f,%f,%f\r\n',measFileName,doseFileName,axs,dep,max(gam),mean(gam),std(gam),pass_cts/length(gam)*100,sh);
+            fprintf(fptr,'%s,%s,%s,%f,%f,%f,%f,%f,%f\r\n',measFileName,doseFileName,axs,dep,max(gam),mean(gam),std(gam),pass_rt,sh);
             fclose(fptr);
         end                
         
