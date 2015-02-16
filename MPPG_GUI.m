@@ -130,7 +130,7 @@ function getMeasFile(source,eventdata)
 
     disp('Parsing W2CAD file...');
     %open and parse the measurement file
-    measData = omniproAccessTOmat([measPathName measFileName]);
+    measData = measuredDataTOmat([measPathName measFileName]);
     
     % Create a measurement data status
     numI = 0; % inline
