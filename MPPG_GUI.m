@@ -25,7 +25,7 @@ if ~isdeployed %if this is not an EXE instance of the program, then add path
 end
 
 % MPPG Window
-guiCtrl = figure('Resize','on','Units','pixels','Position',[200 300 700 500],'Visible','off','MenuBar','none','name','MPPG Profile Comparison Tool V2.1','NumberTitle','off','UserData',0);
+guiCtrl = figure('Resize','on','Units','pixels','Position',[200 300 700 500],'Visible','off','MenuBar','none','name','MPPG Profile Comparison Tool V2.2','NumberTitle','off','UserData',0);
 
 % Buttons for opening measurement and dose
 measOpenBut = uicontrol('Parent',guiCtrl,'Style','pushbutton','String','Get Measured Dose File','FontUnits','normalized','FontSize',.4,'Units','normalized','Position',[.05 .89 .4 .1],'callback','ClickedCallback','Callback', {@getMeasFile});
