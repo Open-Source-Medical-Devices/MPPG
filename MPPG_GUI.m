@@ -359,7 +359,7 @@ function runTests(source,eventdata)
             % pdd, cross, or inline, 
             % position of max gamma
             
-            fprintf(fptr,'%s,%s,%s,%f,%f,%f,%f,%f,%f\r\n',measFileName,doseFileName,axs,dep,max(gam),mean(gam),std(gam),pass_rt,sh);
+            fprintf(fptr,'%s,%s,%s,%f,%f,%f,%f,%f,%f\r\n',measFileName,doseFileName,axs,dep,max(gam),nanmean(gam),nanstd(gam),pass_rt,sh);
             fclose(fptr);
         end                
         
