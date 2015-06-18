@@ -86,6 +86,13 @@ elseif mx(1) ~= mx(end); idm = mx;
 elseif my(1) ~= my(end); idm = my; 
 end
 
+%Check if any points of the measured data are at same location
+%Get rid of any measured points that are at repeat locations, this will
+%crash interpolation
+not_rep_pts = [true; (idm(1:end-1)-idm(2:end)) ~= 0]; %not repeated points
+idm = idm(not_rep_pts); %remove repeats in the sample positions
+md = md(not_rep_pts); %remove repeats in measured data
+
 % Step 3: Resample for gamma analysis
 
 % Resample indep with the same range but a finer spacing
