@@ -42,55 +42,58 @@ offsetLabel = uicontrol('Parent',guiCtrl,'Style','text','String','DICOM Offset: 
 offsetBut = uicontrol('Parent',guiCtrl,'Style','pushbutton','String','Edit DICOM Offset ...','FontUnits','normalized','FontSize',.4,'Units','normalized','Position',[0.77 .54 .2 .05],'callback','ClickedCallback','Callback', {@editOffset});
 
 %%-%% Create Panels for Options
-NormPanel = uibuttongroup('Parent',guiCtrl,'Title','Depth-Dose and Profile Normalization Options: ','Units','normalized','Position', [.02 .33 .96 .19],'SelectionChangeFcn',{@toggleYedit});
-NormPanel2 = uibuttongroup('Parent',guiCtrl,'Title','Depth-Dose and Profile Normalization Options: ','Units','normalized','Position', [.02 .33 .96 .19],'SelectionChangeFcn',{@toggleXZedit});
-gammaPanel = uipanel('Parent',guiCtrl,'Title','Gamma Analysis Options: ','Units','normalized','Position',    [.02 .13 .46 .19]);
-OutputPanel = uipanel('Parent',guiCtrl,'Title','Output Options: ','Units','normalized','Position',  [.52 .13 .46 .19]);
+NormPanel = uibuttongroup('Parent',guiCtrl,'Title','Depth-Dose Normalization Options: ','Units','normalized','Position', [.02 .33 .42 .19],'SelectionChangeFcn',{@toggleYedit});
+NormPanel2 = uibuttongroup('Parent',guiCtrl,'Title','Profile Normalization Options: ','Units','normalized','Position', [.45 .33 .53 .19],'SelectionChangeFcn',{@toggleXZedit});
+gammaPanel = uipanel('Parent',guiCtrl,'Title','Gamma Analysis Options: ','Units','normalized','Position',    [.02 .13 .72 .19]);
+OutputPanel = uipanel('Parent',guiCtrl,'Title','Output Options: ','Units','normalized','Position',  [.75 .13 .23 .19]);
 
 %-% Depth-Dose Normalization Options 
  
 % Create two radio buttons in NormPanel, which will hold the PDD options
-dmaxButPDD = uicontrol('Style','radiobutton','String','<html>D<sub>max</sub></html>','Units','normalized','Position',[.21 .57 .12 .35],'parent',NormPanel,'HandleVisibility','off','FontUnits','normalized','FontSize',.45);
-depthButPDD = uicontrol('Style','radiobutton','String','Depth (Y)','Units','normalized','Position',[.31 .57 .12 .35],'parent',NormPanel,'HandleVisibility','off','FontUnits','normalized','FontSize',.45);
+dmaxButPDD = uicontrol('Style','radiobutton','String','<html>D<sub>max</sub></html>','Units','normalized','Position',[.45 .57 .24 .35],'parent',NormPanel,'HandleVisibility','off','FontUnits','normalized','FontSize',.45);
+depthButPDD = uicontrol('Style','radiobutton','String','Depth (Y)','Units','normalized','Position',[.69 .57 .3 .35],'parent',NormPanel,'HandleVisibility','off','FontUnits','normalized','FontSize',.45);
  
 % Create some labels
-normToPDD = uicontrol('Parent',NormPanel,'Style','text','String',sprintf('Normalize Depth Dose Profile To:'),'HorizontalAlignment','left','FontUnits','normalized','FontSize',.45,'Units','normalized','Position',[.04 .57 .15 .35]);
+normToPDD = uicontrol('Parent',NormPanel,'Style','text','String',sprintf('Normalize Depth Dose Profile To:'),'HorizontalAlignment','left','FontUnits','normalized','FontSize',.45,'Units','normalized','Position',[.02 .57 .37 .35]);
+DepthYPDD = uicontrol('Parent',NormPanel,'Style','text','String','Depth (Y) =','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.02 .11 .27 .3]);
+DepthPosPDD = uicontrol('Parent',NormPanel,'Style','edit','Enable','off','String','10.0','BackgroundColor','w','FontUnits','normalized','FontSize',.5,'Min',0,'Max',1,'Units','normalized','Position',[.33 .10 .24 .35]);
+DepthCmPDD = uicontrol('Parent',NormPanel,'Style','text','String','cm','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.6 .11 .2 .3]);
 
-DepthYPDD = uicontrol('Parent',NormPanel,'Style','text','String','Depth (Y) =','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.03 .11 .13 .3]);
-DepthCmPDD = uicontrol('Parent',NormPanel,'Style','text','String','cm','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.26 .11 .1 .3]);
-DepthPosPDD = uicontrol('Parent',NormPanel,'Style','edit','Enable','off','String','10.0','BackgroundColor','w','FontUnits','normalized','FontSize',.5,'Min',0,'Max',1,'Units','normalized','Position',[.15 .10 .1 .35]);
- 
 %-% Profile Normalization Options 
 
 % Create two radio buttons in NormPanel2, which will hold the profile options
-dmaxButProf = uicontrol('Style','radiobutton','String','<html>D<sub>max</sub></html>','Units','normalized','Position',[.71 .57 .12 .35],'parent',NormPanel2,'HandleVisibility','off','FontUnits','normalized','FontSize',.45);
-posButProf = uicontrol('Style','radiobutton','String','Position (X,Z)','Units','normalized','Position',[.80 .57 .16 .35],'parent',NormPanel2,'HandleVisibility','off','FontUnits','normalized','FontSize',.45);
+dmaxButProf = uicontrol('Style','radiobutton','String','<html>D<sub>max</sub></html>','Units','normalized','Position',[.45 .57 .18 .35],'parent',NormPanel2,'HandleVisibility','off','FontUnits','normalized','FontSize',.45);
+posButProf = uicontrol('Style','radiobutton','String','Position (X,Z)','Units','normalized','Position',[.65 .57 .33 .35],'parent',NormPanel2,'HandleVisibility','off','FontUnits','normalized','FontSize',.45);
  
 % % Create some labels
-normToProf = uicontrol('Parent',NormPanel2,'Style','text','String',sprintf('Normalize Inline and Crossline Profiles To:'),'HorizontalAlignment','left','FontUnits','normalized','FontSize',.45,'Units','normalized','Position',[.50 .57 .2 .35]);
+normToProf = uicontrol('Parent',NormPanel2,'Style','text','String',sprintf('Normalize Inline and Crossline Profiles To:'),'HorizontalAlignment','left','FontUnits','normalized','FontSize',.45,'Units','normalized','Position',[.02 .57 .42 .35]);
 
-CrosslineXProf = uicontrol('Parent',NormPanel,'Style','text','String','Crossline (X) =','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.35 .11 .15 .3]);
-CrosslineCmProf = uicontrol('Parent',NormPanel,'Style','text','String','cm','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.61 .11 .06 .3]);
-CrosslinePosProf = uicontrol('Parent',NormPanel,'Style','edit','Enable','off','String','0.0','BackgroundColor','w','FontUnits','normalized','FontSize',.5,'Min',0,'Max',1,'Units','normalized','Position',[.5 .10 .1 .35]);
+CrosslineXProf = uicontrol('Parent',NormPanel2,'Style','text','String','Crossline (X) =','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.02 .09 .30 .3]);
+CrosslinePosProf = uicontrol('Parent',NormPanel2,'Style','edit','Enable','off','String','0.0','BackgroundColor','w','FontUnits','normalized','FontSize',.5,'Min',0,'Max',1,'Units','normalized','Position',[.31 .09 .13 .35]);
+CrosslineCmProf = uicontrol('Parent',NormPanel2,'Style','text','String','cm','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.46 .09 .08 .3]);
 
-InlineZProf = uicontrol('Parent',NormPanel,'Style','text','String','Inline (Z) =','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.7 .11 .13 .3]);
-InlineCmProf = uicontrol('Parent',NormPanel,'Style','text','String','cm','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.93 .11 .06 .3]);
-InlinePosProf = uicontrol('Parent',NormPanel,'Style','edit','Enable','off','String','0.0','BackgroundColor','w','FontUnits','normalized','FontSize',.5,'Min',0,'Max',1,'Units','normalized','Position',[.82 .10 .1 .35]);
+InlineZProf = uicontrol('Parent',NormPanel2,'Style','text','String','Inline (Z) =','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.56 .09 .30 .3]);
+InlinePosProf = uicontrol('Parent',NormPanel2,'Style','edit','Enable','off','String','0.0','BackgroundColor','w','FontUnits','normalized','FontSize',.5,'Min',0,'Max',1,'Units','normalized','Position',[.77 .09 .13 .35]);
+InlineCmProf = uicontrol('Parent',NormPanel2,'Style','text','String','cm','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.92 .09 .08 .3]);
 
 %-% Gamma Options
-doseErLabel = uicontrol('Parent',gammaPanel,'Style','text','String','Dose Diff. (%):','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.05 .65 .3 .25]);
-posErLabel = uicontrol('Parent',gammaPanel,'Style','text','String','DTA (mm):','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.57 .65 .3 .25]);
-NormLabel = uicontrol('Parent',gammaPanel,'Style','text','String','Dose Analysis:','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.05 .15 .3 .25]);
+doseErLabel = uicontrol('Parent',gammaPanel,'Style','text','String','Dose Diff. (%):','HorizontalAlignment','left','FontUnits','normalized','FontSize',.65,'Units','normalized','Position',[.02 .65 .2 .25]);
+doseErEdit = uicontrol('Parent',gammaPanel,'Style','edit','String','2','BackgroundColor','w','FontUnits','normalized','FontSize',.5,'Min',0,'Max',1,'Units','normalized','Position',[.23 .6 .12 .35],'Callback',{@getDoseErThresh});
+posErLabel = uicontrol('Parent',gammaPanel,'Style','text','String','DTA (mm):','HorizontalAlignment','left','FontUnits','normalized','FontSize',.65,'Units','normalized','Position',[.38 .65 .2 .25]);
+posErEdit = uicontrol('Parent',gammaPanel,'Style','edit','String','2','BackgroundColor','w','FontUnits','normalized','FontSize',.5,'Min',0,'Max',1,'Units','normalized','Position',[.55 .6 .12 .35],'Callback',{@getPosErThresh});
 
 % Create the button group.
-NormButton = uibuttongroup('Parent',gammaPanel,'visible','on','Units','normalized','Position',[.4 .05 .55 .45]);
-
+NormLabel = uicontrol('Parent',gammaPanel,'Style','text','String','Dose Analysis:','HorizontalAlignment','left','FontUnits','normalized','FontSize',.65,'Units','normalized','Position',[.02 .15 .3 .25]);
+NormButton = uibuttongroup('Parent',gammaPanel,'visible','on','Units','normalized','Position',[.23 .05 .44 .45]);
 % Create two radio buttons in the button group.
-globalBut = uicontrol('Style','radiobutton','String','Global','Units','normalized','Position',[.05 .05 .44 .9],'parent',NormButton,'HandleVisibility','off','FontUnits','normalized','FontSize',.6);
-localBut = uicontrol('Style','radiobutton','String','Local','Units','normalized','Position',[.55 .05 .44 .9],'parent',NormButton,'HandleVisibility','off','FontUnits','normalized','FontSize',.6);
+globalBut = uicontrol('Style','radiobutton','String','Global','Units','normalized','Position',[.05 .05 .44 .9],'parent',NormButton,'HandleVisibility','off','FontUnits','normalized','FontSize',.5);
+localBut = uicontrol('Style','radiobutton','String','Local','Units','normalized','Position',[.55 .05 .44 .9],'parent',NormButton,'HandleVisibility','off','FontUnits','normalized','FontSize',.5);
 
-doseErEdit = uicontrol('Parent',gammaPanel,'Style','edit','String','2','BackgroundColor','w','FontUnits','normalized','FontSize',.5,'Min',0,'Max',1,'Units','normalized','Position',[.35 .6 .15 .35],'Callback',{@getDoseErThresh});
-posErEdit = uicontrol('Parent',gammaPanel,'Style','edit','String','2','BackgroundColor','w','FontUnits','normalized','FontSize',.5,'Min',0,'Max',1,'Units','normalized','Position',[.80 .6 .15 .35],'Callback',{@getPosErThresh});
+% Create options for thresholds
+useThreshold = uicontrol('Parent',gammaPanel,'Style','checkbox','Enable','on','String','Use Threshold?','FontUnits','normalized','FontSize',.5,'Min',0,'Max',3,'Value',0,'Units','normalized','Position',[.71 .6 .28 .35],'Callback',{@toggleThreshold});
+thresholdVal = uicontrol('Parent',gammaPanel,'Style','edit','Enable','off','String','5.0','BackgroundColor','w','FontUnits','normalized','FontSize',.5,'Min',0,'Max',1,'Units','normalized','Position',[.78 .14 .12 .35]);
+thresholdPct = uicontrol('Parent',gammaPanel,'Style','text','String','%','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.91 .14 .04 .3]);
+
 
 %-% Checkboxes for Output Options
 makeTable = uicontrol('Parent',OutputPanel,'Style','checkbox','Enable','on','String','Create CSV File','FontUnits','normalized','FontSize',.5,'Min',0,'Max',3,'Value',3,'Units','normalized','Position',[.05 .6 .9 .35]);
@@ -101,7 +104,6 @@ testRunBut = uicontrol('Parent',guiCtrl,'Style','pushbutton','String','Run','Fon
 
 defaultBackground = get(0,'defaultUicontrolBackgroundColor');
 set(guiCtrl,'Color',defaultBackground);
-
 set(guiCtrl,'Visible','on');
 
 measFileName = []; %global, used for output filenames and graph titles
@@ -249,8 +251,14 @@ function runTests(source,eventdata)
             norm_dim = 'Z';           
             m_xlabel = 'Inline Position (Z) [cm]';
         end
-            
-
+        
+        % Use user preferences to determine threshold choice:
+        if get(useThreshold,'Value')
+            userThresh = sscanf(get(thresholdVal,'String'),'%f')/100;
+        else
+            userThresh = -1;
+        end
+           
         [indep, md, cd] = PrepareData(mx, my, mz, md, cx, cy, cz, calcData, normLoc);
 
         % tweak registration, make this optional, or kick out if sh is large
@@ -302,10 +310,12 @@ function runTests(source,eventdata)
             rM_max = max(regMeas(:,1));
             rM_min = min(regMeas(:,1));
             subplot(3,1,1); plot(regMeas(:,1),regMeas(:,2),'b','Linewidth',2); hold all;
-            subplot(3,1,1); plot(regCalc(:,1),regCalc(:,2),'r--','Linewidth',2); hold off;
+            subplot(3,1,1); plot(regCalc(:,1),regCalc(:,2),'r--','Linewidth',2); 
+            subplot(3,1,1); plot(regCalc(:,1),userThresh*ones(size(regCalc(:,1))),'m:','Linewidth',1)
+            hold off;
             xlabel(m_xlabel);
             ylabel('Relative Dose');
-            legend('Measured','TPS');
+            legend('Measured','TPS','Threshold');
             axis([ rM_min rM_max 0 1.01*max( [ max(regCalc(:,2)) max(regMeas(:,2)) ] ) ]);
             title(plotTitle);
             
@@ -410,6 +420,16 @@ function toggleXZedit(hObject, eventdata, handles)
     else
         set(InlinePosProf,'Enable','on');
         set(CrosslinePosProf,'Enable','on');
+    end
+    
+end
+
+function toggleThreshold(hObject, eventdata, handles)
+
+    if get(useThreshold,'Value')
+        set(thresholdVal,'Enable','on');
+    else
+    	set(thresholdVal,'Enable','off');
     end
     
 end
