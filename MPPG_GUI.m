@@ -25,7 +25,7 @@ if ~isdeployed %if this is not an EXE instance of the program, then add path
 end
 
 % MPPG Window
-guiCtrl = figure('Resize','on','Units','pixels','Position',[200 300 700 500],'Visible','off','MenuBar','none','name','MPPG Profile Comparison Tool V2.2','NumberTitle','off','UserData',0);
+guiCtrl = figure('Resize','on','Units','pixels','Position',[200 300 700 500],'Visible','off','MenuBar','none','name','MPPG Profile Comparison Tool V2.3','NumberTitle','off','UserData',0);
 
 % Buttons for opening measurement and dose
 measOpenBut = uicontrol('Parent',guiCtrl,'Style','pushbutton','String','Get Measured Dose File','FontUnits','normalized','FontSize',.4,'Units','normalized','Position',[.05 .89 .4 .1],'callback','ClickedCallback','Callback', {@getMeasFile});
@@ -254,9 +254,9 @@ function runTests(source,eventdata)
         
         % Use user preferences to determine threshold choice:
         if get(useThreshold,'Value')
-            userThresh = sscanf(get(thresholdVal,'String'),'%f')/100;
+            usrThrs = sscanf(get(thresholdVal,'String'),'%f')/100;
         else
-            userThresh = -1;
+            usrThrs = -1;
         end
            
         [indep, md, cd] = PrepareData(mx, my, mz, md, cx, cy, cz, calcData, normLoc);
@@ -274,7 +274,7 @@ function runTests(source,eventdata)
         else
         	globAna = false;
         end
-        [gam, distMinGam, doseMinGam, pass_rt] = VerifyData(regMeas, regCalc, distThr, doseThr, globAna, false);
+        [gam, distMinGam, doseMinGam, gamma_stats] = VerifyData(regMeas, regCalc, distThr, doseThr, globAna, usrThrs, false);
 
         %summarize results for this test
         if get(makePdf,'Value') == 3
@@ -311,7 +311,7 @@ function runTests(source,eventdata)
             rM_min = min(regMeas(:,1));
             subplot(3,1,1); plot(regMeas(:,1),regMeas(:,2),'b','Linewidth',2); hold all;
             subplot(3,1,1); plot(regCalc(:,1),regCalc(:,2),'r--','Linewidth',2); 
-            subplot(3,1,1); plot(regCalc(:,1),userThresh*ones(size(regCalc(:,1))),'m:','Linewidth',1)
+            subplot(3,1,1); plot(regCalc(:,1),usrThrs*ones(size(regCalc(:,1))),'m:','Linewidth',.1)
             hold off;
             xlabel(m_xlabel);
             ylabel('Relative Dose');
@@ -323,7 +323,7 @@ function runTests(source,eventdata)
             %ylim([0 1.5]);
             xlabel(m_xlabel);
             ylabel('Gamma');
-            text(rM_min+((rM_max-rM_min)/2),1.2,['Pass rate: ' sprintf('%0.1f',pass_rt) '%'],'BackgroundColor',[.9 .9 .9],'HorizontalAlignment','center');
+            text(rM_min+((rM_max-rM_min)/2),1.2,['Pass rate: ' sprintf('%0.1f',gamma_stats(6)) '%'],'BackgroundColor',[.9 .9 .9],'HorizontalAlignment','center');
             axis([ rM_min rM_max 0 1.5 ]);
             
             subplot(3,1,3); plot(regMeas(:,1),distMinGam,'b','Linewidth',2); hold all;
@@ -358,18 +358,18 @@ function runTests(source,eventdata)
             end
             fptr = fopen(outName,'a');            
             if writeHdr
-                fprintf(fptr,'%s,%s,%s,%s,%s,%s,%s,%s,%s\r\n','Measurement Filename','Calculated Filename','Axis','Depth','Max Gamma','Average Gamma','Std Dev Gamma','Passing Rate (%)','Optimum shift (cm)');
+                fprintf(fptr,'%s,%s,%s,%s,%s,%s,%s,%s,%s\r\n','Measurement Filename','Calculated Filename','Axis','Depth','Max Gamma','Average Gamma','Std Dev Gamma','Passing Rate (%)','Points Above Threshold');
             end
             % measured file name, 
-            % calculated filename, 
+            % calculated filename,
+            % scan axis
+            % scan depth if applicable
             % max gamma, 
-            % registration offset, 
-            % dist error at max gamma, 
-            % dose error at max gamma, 
-            % pdd, cross, or inline, 
-            % position of max gamma
-            
-            fprintf(fptr,'%s,%s,%s,%f,%f,%f,%f,%f,%f\r\n',measFileName,doseFileName,axs,dep,max(gam),nanmean(gam),nanstd(gam),pass_rt,sh);
+            % mean gamma,
+            % std gamma,
+            % gamma passing rate
+                        
+            fprintf(fptr,'%s,%s,%s,%f,%f,%f,%f,%f,%d\r\n',measFileName,doseFileName,axs,dep,gamma_stats(1),gamma_stats(2),gamma_stats(3),gamma_stats(6),gamma_stats(4));
             fclose(fptr);
         end                
         

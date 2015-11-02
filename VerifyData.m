@@ -1,4 +1,4 @@
-function [gam, distMinGam, doseMinGam, pass_rt] = VerifyData(regMeas, regCalc, distThr, doseThr, globAna, plotOn)
+function [gam, distMinGam, doseMinGam, gamma_stats ] = VerifyData(regMeas, regCalc, distThr, doseThr, globAna, usrThrs, plotOn)
 % vOut = VerifyData(regMeas, regCalc, plotOn, distThr, doseThr)
 %   Perform 1D gamma evaluation
 %
@@ -8,10 +8,16 @@ function [gam, distMinGam, doseMinGam, pass_rt] = VerifyData(regMeas, regCalc, d
 %       distThr - Gamma calc distance threshold in mm
 %       doseThr - Gamma calc dose threshold in %
 %       globAna - Global vs. Local dose difference analysis
+%       usrThrs - User specified lower threshold for counting gamma results 
 %       plotOn - Plot flag to be verbose with plotting
 %
 %   Output:
-%       vOut - 1D gamma calculation result
+%       gam - 1D gamma calculation result
+%       distMinGam - DTA component of gamma
+%       doseMinGam - Dose difference component of gamma
+%       gamma_stats - an array with [ gamma_max gamma_mean gamma_std
+%       aboveTh aboveThPass passRt]
+%
 %
 %   Reference:
 %       D.A. Low and J.F. Dempsey. Evaluation of the gamma dose distribution
@@ -109,9 +115,45 @@ function [gam, distMinGam, doseMinGam, pass_rt] = VerifyData(regMeas, regCalc, d
 %         print(gcf, '-dpdf', '-append', '-painters', '-r300', 'MPPG_Output_Figures.pdf'); %save a copy of the image
 %     end
     
-    %Compute the gamma passing rate
-    pass_rt = 100*sum(gam<=1)/length(gam);
-
+    % Compute the gamma statistics
+    aboveTh = 0;
+    aboveThPass = 0;
+    gamma_max = 0;
+    gamma_sum = 0;
+    gamma_sum_2 = 0;
+    zero_flag = 1;
+    
+    for i = 1:length(gam)
+        
+%         if regCalc(i,2) <= 0 && zero_flag
+%             zero_flag = 0;
+%             h = msgbox('Calculated dose values that are less than or equal to zero were found in this profile. These points will be excluded from the gamma analysis.');
+%             waitfor(h)
+%         end          
+        
+        if regMeas(i,2) >= usrThrs && regCalc(i,2) > 0
+            
+            % Update maximum gamma
+            if gam(i) > gamma_max, gamma_max = gam(i); end
+            
+            % Update mean and std stats
+            gamma_sum = gamma_sum + gam(i);
+            gamma_sum_2 = gamma_sum_2 + gam(i)*gam(i);
+            
+            % Update counts
+            aboveTh = aboveTh + 1;
+            if gam(i) <= 1
+                aboveThPass = aboveThPass + 1;
+            end
+            
+        end    
+    end
+    
+    gamma_mean = gamma_sum/aboveTh;
+    gamma_std = sqrt(gamma_sum_2/aboveTh - gamma_sum*gamma_sum/aboveTh/aboveTh);
+    passRt = aboveThPass/aboveTh*100;
+    gamma_stats = [ gamma_max gamma_mean gamma_std aboveTh aboveThPass passRt];
+    
     %figure;
     %plot(regMeas(:,1),regMeas(:,2)); hold all;
     %plot(regCalc(:,1),regCalc(:,2));
