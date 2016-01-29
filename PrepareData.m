@@ -1,4 +1,4 @@
-function [indep, md, cd] = PrepareData(mx, my, mz, md, cx, cy, cz, calcData, normLoc)
+function [indep, md, cd, cd_ref] = PrepareData(mx, my, mz, md, cx, cy, cz, calcData, normLoc)
 
 % Step 1: Evaluate the calculated dose grid to determine if the measure
 % profile fits inside
@@ -110,8 +110,10 @@ cd = interp3(cx,cy,cz,calcData,linspace(mx(1),mx(end),PTS),linspace(mz(1),mz(end
 % Step 4: Apply normalization preferences:
 if strcmp(normLoc,'dmax')
     md = md/max(md);
+    cd_ref = max(cd);
     cd = cd/max(cd);
 else
     md = md / max(md);
+    cd_ref = interp1(indep,cd,normLoc);
     cd = (cd / interp1(indep,cd,normLoc)) * interp1(indep,md,normLoc);
 end

@@ -24,3 +24,8 @@ J = reshape(I(:,:,1,:),[rows cols deps]);
 
 % Scale Dose Grid Using Stored Factor
 dose = double(J)*info.DoseGridScaling;
+
+if strcmp(info.DoseUnits,'CGY')
+    dose = dose/100;
+end
+

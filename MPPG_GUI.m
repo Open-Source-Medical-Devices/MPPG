@@ -179,6 +179,9 @@ function getCalcFile(source,eventdata)
     %offset value represents the offset from the dicom origin to the users chosen isocenter in the plane for the given beam, or other way around
     %prompt the user for the offset values
     
+    refd = interp3(cx,cy,cz,calcData,0,10,0,'*cubic');
+    fprintf('The dose at 0,0,10 is %.3f Gy\n',refd);
+    
     set(calcFileLabel,'String',sprintf('DICOM-RT DOSE File: %s',doseFileName));
     set(calcStatusLabel,'String',sprintf('DICOM Status: %s',planData.STATUS));
     set(offsetLabel,'String',sprintf('DICOM Offset: (%.3f, %.3f, %.3f)',planData.ORIGIN(1),planData.ORIGIN(2),planData.ORIGIN(3)));
@@ -259,7 +262,7 @@ function runTests(source,eventdata)
             usrThrs = -1;
         end
            
-        [indep, md, cd] = PrepareData(mx, my, mz, md, cx, cy, cz, calcData, normLoc);
+        [indep, md, cd, cd_ref] = PrepareData(mx, my, mz, md, cx, cy, cz, calcData, normLoc);
 
         % tweak registration, make this optional, or kick out if sh is large
         % maybe register in 3D?
@@ -307,6 +310,10 @@ function runTests(source,eventdata)
                 end
             end                       
             
+            dim = [.15 .91 .01 .01];
+            str = sprintf('TPS dose at normalization point is %.3f Gy',cd_ref);
+            annotation('textbox',dim,'String',str,'FitBoxToText','on','LineStyle','none');
+            
             rM_max = max(regMeas(:,1));
             rM_min = min(regMeas(:,1));
             subplot(3,1,1); plot(regMeas(:,1),regMeas(:,2),'b','Linewidth',2); hold all;
@@ -316,7 +323,7 @@ function runTests(source,eventdata)
             xlabel(m_xlabel);
             ylabel('Relative Dose');
             legend('Measured','TPS','Threshold');
-            axis([ rM_min rM_max 0 1.01*max( [ max(regCalc(:,2)) max(regMeas(:,2)) ] ) ]);
+            axis([ rM_min rM_max 0 1.15*max( [ max(regCalc(:,2)) max(regMeas(:,2)) ] ) ]);
             title(plotTitle);
             
             subplot(3,1,2); plot(regMeas(:,1),gam,'b','Linewidth',2);
