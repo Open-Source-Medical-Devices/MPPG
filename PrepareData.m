@@ -96,7 +96,7 @@ md = md(not_rep_pts); %remove repeats in measured data
 % Step 3: Resample for gamma analysis
 
 % Resample indep with the same range but a finer spacing
-SAMP_PER_CM = 50; % samples per cm
+SAMP_PER_CM = 200; % samples per cm
 idm_range = abs(idm(end)-idm(1));
 PTS = floor(SAMP_PER_CM*idm_range); %number of samples
 indep = linspace(idm(1),idm(end),PTS);
