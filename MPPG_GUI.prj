@@ -1,21 +1,34 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="54771443" file="/Users/jacqmin/Github/MPPG/MPPG_GUI.prj" location="/Users/jacqmin/Github/MPPG" name="MPPG_GUI" preferred-package-location="/Users/jacqmin/Github/MPPG/MPPG_GUI/for_redistribution" preferred-package-type="package.type.app" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="2662568806" file="/Users/jacqmin/Github/MPPG/MPPG_GUI.prj" location="/Users/jacqmin/Github/MPPG" name="MPPG_GUI" preferred-package-location="/Users/jacqmin/Github/MPPG/MPPG_GUI/for_redistribution" preferred-package-type="package.type.app" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MPPG_GUI</param.appname>
     <param.icon />
     <param.icons />
     <param.version>2.3</param.version>
-    <param.authnamewatermark />
-    <param.email />
-    <param.company />
+    <param.authnamewatermark>Dustin Jacqmin</param.authnamewatermark>
+    <param.email>jacqmin@humonc.wisc.edu</param.email>
+    <param.company>University of Wisconsin Madison</param.company>
     <param.summary />
     <param.description />
     <param.screenshot />
     <param.guid />
-    <param.net.saved.interface />
-    <param.installpath.string>MPPG_GUI</param.installpath.string>
+    <param.installpath.string>/MPPG_GUI/</param.installpath.string>
     <param.installpath.combo>option.installpath.systemwideapp</param.installpath.combo>
     <param.logo />
-    <param.install.notes />
+    <param.install.notes>In the following directions, replace MCR_ROOT by the directory where the MATLAB Runtime is installed on the target machine.
+
+If the environment variable DYLD_LIBRARY_PATH is undefined, set it to the concatenation of the following strings:
+
+    MCR_ROOT/v90/runtime/maci64:
+    MCR_ROOT/v90/sys/os/maci64:
+    MCR_ROOT/v90/bin/maci64
+
+If it is defined, set it to the concatenation of these strings:
+
+    ${LD_LIBRARY_PATH}: 
+    MCR_ROOT/v90/runtime/maci64:
+    MCR_ROOT/v90/sys/os/maci64:
+    MCR_ROOT/v90/bin/maci64</param.install.notes>
+    <param.target.install.notes />
     <param.intermediate>${PROJECT_ROOT}/MPPG_GUI/for_testing</param.intermediate>
     <param.files.only>${PROJECT_ROOT}/MPPG_GUI/for_redistribution_files_only</param.files.only>
     <param.output>${PROJECT_ROOT}/MPPG_GUI/for_redistribution</param.output>
@@ -48,9 +61,9 @@
       <param.description />
       <param.screenshot />
       <param.guid />
-      <param.net.saved.interface />
       <param.installpath.combo />
       <param.logo />
+      <param.target.install.notes />
       <param.intermediate />
       <param.files.only />
       <param.output />
@@ -72,22 +85,19 @@
     <fileset.main>
       <file>${PROJECT_ROOT}/MPPG_GUI.m</file>
     </fileset.main>
-    <fileset.resources>
+    <fileset.resources />
+    <fileset.package />
+    <fileset.depfun>
       <file>${PROJECT_ROOT}/PrepareData.m</file>
       <file>${PROJECT_ROOT}/RegisterData.m</file>
       <file>${PROJECT_ROOT}/VerifyData.m</file>
       <file>${PROJECT_ROOT}/asciiTOmat.m</file>
-      <file>${PROJECT_ROOT}/convertTOrelative.m</file>
       <file>${PROJECT_ROOT}/dicomDoseTOmat.m</file>
       <file>${PROJECT_ROOT}/dicomProcessor.m</file>
       <file>${PROJECT_ROOT}/fncAskForOffset.m</file>
       <file>${PROJECT_ROOT}/measuredDataTOmat.m</file>
-      <file>${PROJECT_ROOT}/omniproAccessTOmat.m</file>
       <file>${PROJECT_ROOT}/w2cadTOmat.m</file>
-    </fileset.resources>
-    <fileset.package>
-      <file>${MATLAB_ROOT}/toolbox/compiler/deploy/win64/MCRInstaller.exe</file>
-    </fileset.package>
+    </fileset.depfun>
     <build-deliverables>
       <file location="${PROJECT_ROOT}/MPPG_GUI/for_testing" name="MPPG_GUI.app" optional="false">/Users/jacqmin/Github/MPPG/MPPG_GUI/for_testing/MPPG_GUI.app</file>
       <file location="${PROJECT_ROOT}/MPPG_GUI/for_testing" name="run_MPPG_GUI.sh" optional="false">/Users/jacqmin/Github/MPPG/MPPG_GUI/for_testing/run_MPPG_GUI.sh</file>
@@ -96,7 +106,7 @@
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>/Applications/MATLAB_R2015a.app</root>
+      <root>/Applications/MATLAB_R2015b.app</root>
       <toolboxes />
     </matlab>
     <platform>

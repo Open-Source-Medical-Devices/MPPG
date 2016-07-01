@@ -91,7 +91,7 @@ localBut = uicontrol('Style','radiobutton','String','Local','Units','normalized'
 
 % Create options for thresholds
 useThreshold = uicontrol('Parent',gammaPanel,'Style','checkbox','Enable','on','String','Use Threshold?','FontUnits','normalized','FontSize',.5,'Min',0,'Max',3,'Value',0,'Units','normalized','Position',[.71 .6 .28 .35],'Callback',{@toggleThreshold});
-thresholdVal = uicontrol('Parent',gammaPanel,'Style','edit','Enable','off','String','5.0','BackgroundColor','w','FontUnits','normalized','FontSize',.5,'Min',0,'Max',1,'Units','normalized','Position',[.78 .14 .12 .35]);
+thresholdVal = uicontrol('Parent',gammaPanel,'Style','edit','Enable','off','String','10.0','BackgroundColor','w','FontUnits','normalized','FontSize',.5,'Min',0,'Max',1,'Units','normalized','Position',[.78 .14 .12 .35]);
 thresholdPct = uicontrol('Parent',gammaPanel,'Style','text','String','%','HorizontalAlignment','left','FontUnits','normalized','FontSize',.6,'Units','normalized','Position',[.91 .14 .04 .3]);
 
 
@@ -310,7 +310,7 @@ function runTests(source,eventdata)
                 end
             end                       
             
-            dim = [.15 .91 .01 .01];
+            dim = [.15 .90 .01 .01];
             str = sprintf('TPS dose at normalization point is %.3f Gy',cd_ref);
             annotation('textbox',dim,'String',str,'FitBoxToText','on','LineStyle','none');
             

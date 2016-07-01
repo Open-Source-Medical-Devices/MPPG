@@ -75,7 +75,8 @@ function doseData = fncAskForOffset(doseData,x0,y0,z0)
         set(offsetCtrl,'Color',defaultBackground);    
 
         set(xOffsetEdit,'String',sprintf('%.2f',x0));
-        set(yOffsetEdit,'String',sprintf('%.2f',y0));
+        %set(yOffsetEdit,'String',sprintf('%.2f',y0));
+        set(yOffsetEdit,'String',sprintf('%.2f',-25.06));
         set(zOffsetEdit,'String',sprintf('%.2f',z0));           
         set(offsetCtrl,'Visible','on');
         

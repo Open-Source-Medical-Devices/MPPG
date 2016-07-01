@@ -75,7 +75,7 @@ renamerPathName = [];
             if isdir(renamerPathName)
                                
                 % Save the directory above this one as the last directory      
-                renamerPathSave = sprintf('%s%s', renamerPathName, '\..');
+                renamerPathSave = sprintf('%s%s', renamerPathName, '/..');
                 save('rpath.mat','renamerPathSave');
 
                 % Set the directory name in the GUI
