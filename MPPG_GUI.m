@@ -179,9 +179,6 @@ function getCalcFile(source,eventdata)
     %offset value represents the offset from the dicom origin to the users chosen isocenter in the plane for the given beam, or other way around
     %prompt the user for the offset values
     
-    refd = interp3(cx,cy,cz,calcData,0,10,0,'*cubic');
-    fprintf('The dose at 0,0,10 is %.3f Gy\n',refd);
-    
     set(calcFileLabel,'String',sprintf('DICOM-RT DOSE File: %s',doseFileName));
     set(calcStatusLabel,'String',sprintf('DICOM Status: %s',planData.STATUS));
     set(offsetLabel,'String',sprintf('DICOM Offset: (%.3f, %.3f, %.3f)',planData.ORIGIN(1),planData.ORIGIN(2),planData.ORIGIN(3)));

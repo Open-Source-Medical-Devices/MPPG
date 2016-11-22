@@ -98,7 +98,7 @@ md = md(not_rep_pts); %remove repeats in measured data
 % Resample indep with the same range but a finer spacing
 SAMP_PER_CM = 200; % samples per cm
 idm_range = abs(idm(end)-idm(1));
-PTS = floor(SAMP_PER_CM*idm_range); %number of samples
+PTS = min(2500,floor(SAMP_PER_CM*idm_range)); %number of samples
 indep = linspace(idm(1),idm(end),PTS);
 
 % Resample md with new indep
