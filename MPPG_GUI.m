@@ -78,9 +78,9 @@ InlineCmProf = uicontrol('Parent',NormPanel2,'Style','text','String','cm','Horiz
 
 %-% Gamma Options
 doseErLabel = uicontrol('Parent',gammaPanel,'Style','text','String','Dose Diff. (%):','HorizontalAlignment','left','FontUnits','normalized','FontSize',.65,'Units','normalized','Position',[.02 .65 .2 .25]);
-doseErEdit = uicontrol('Parent',gammaPanel,'Style','edit','String','2','BackgroundColor','w','FontUnits','normalized','FontSize',.5,'Min',0,'Max',1,'Units','normalized','Position',[.23 .6 .12 .35],'Callback',{@getDoseErThresh});
+doseErEdit = uicontrol('Parent',gammaPanel,'Style','edit','String','2','BackgroundColor','w','FontUnits','normalized','FontSize',.5,'Min',0,'Max',1,'Units','normalized','Position',[.23 .6 .12 .35]);
 posErLabel = uicontrol('Parent',gammaPanel,'Style','text','String','DTA (mm):','HorizontalAlignment','left','FontUnits','normalized','FontSize',.65,'Units','normalized','Position',[.38 .65 .2 .25]);
-posErEdit = uicontrol('Parent',gammaPanel,'Style','edit','String','2','BackgroundColor','w','FontUnits','normalized','FontSize',.5,'Min',0,'Max',1,'Units','normalized','Position',[.55 .6 .12 .35],'Callback',{@getPosErThresh});
+posErEdit = uicontrol('Parent',gammaPanel,'Style','edit','String','2','BackgroundColor','w','FontUnits','normalized','FontSize',.5,'Min',0,'Max',1,'Units','normalized','Position',[.55 .6 .12 .35]);
 
 % Create the button group.
 NormLabel = uicontrol('Parent',gammaPanel,'Style','text','String','Dose Analysis:','HorizontalAlignment','left','FontUnits','normalized','FontSize',.65,'Units','normalized','Position',[.02 .15 .3 .25]);
