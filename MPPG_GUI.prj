@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="1791538297" file="\\admiral.humonc.wisc.edu\homes\jacqmin\Documents\MATLAB\New Folder\MPPG_GUI.prj" location="\\admiral.humonc.wisc.edu\homes\jacqmin\Documents\MATLAB\New Folder" name="MPPG_GUI" preferred-package-location="\\admiral.humonc.wisc.edu\homes\jacqmin\Documents\MATLAB\New Folder\MPPG_GUI\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="1791538297" file="\\admiral.humonc.wisc.edu\homes\jacqmin\Documents\MATLAB\GIT MPPG\MPPG_GUI.prj" location="\\admiral.humonc.wisc.edu\homes\jacqmin\Documents\MATLAB\GIT MPPG" name="MPPG_GUI" preferred-package-location="\\admiral.humonc.wisc.edu\homes\jacqmin\Documents\MATLAB\New Folder\MPPG_GUI\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MPPG_GUI</param.appname>
     <param.icon />
     <param.icons />
@@ -94,9 +94,9 @@ If it is defined, set it to the concatenation of these strings:
       <file>${PROJECT_ROOT}\w2cadTOmat.m</file>
     </fileset.depfun>
     <build-deliverables>
-      <file location="${PROJECT_ROOT}\MPPG_GUI\for_testing" name="MPPG_GUI.exe" optional="false">\\admiral.humonc.wisc.edu\homes\jacqmin\Documents\MATLAB\New Folder\MPPG_GUI\for_testing\MPPG_GUI.exe</file>
-      <file location="${PROJECT_ROOT}\MPPG_GUI\for_testing" name="readme.txt" optional="true">\\admiral.humonc.wisc.edu\homes\jacqmin\Documents\MATLAB\New Folder\MPPG_GUI\for_testing\readme.txt</file>
-      <file location="${PROJECT_ROOT}\MPPG_GUI\for_testing" name="splash.png" optional="false">\\admiral.humonc.wisc.edu\homes\jacqmin\Documents\MATLAB\New Folder\MPPG_GUI\for_testing\splash.png</file>
+      <file location="${PROJECT_ROOT}\MPPG_GUI\for_testing" name="readme.txt" optional="true">\\admiral.humonc.wisc.edu\homes\jacqmin\Documents\MATLAB\GIT MPPG\MPPG_GUI\for_testing\readme.txt</file>
+      <file location="${PROJECT_ROOT}\MPPG_GUI\for_testing" name="MPPG_GUI.exe" optional="false">\\admiral.humonc.wisc.edu\homes\jacqmin\Documents\MATLAB\GIT MPPG\MPPG_GUI\for_testing\MPPG_GUI.exe</file>
+      <file location="${PROJECT_ROOT}\MPPG_GUI\for_testing" name="splash.png" optional="false">\\admiral.humonc.wisc.edu\homes\jacqmin\Documents\MATLAB\GIT MPPG\MPPG_GUI\for_testing\splash.png</file>
     </build-deliverables>
     <workflow />
     <matlab>
