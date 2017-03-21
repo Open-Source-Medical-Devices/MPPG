@@ -81,14 +81,35 @@ end
 % Step 2: Determine what measured dimension to use for independent
 % variable:
 
+% Some scanning system export profiles that have meandering position values
+% along axes that are supposed to be fixed. This block of code
+% pre-emptively addresses the problem by:
+% (1) Identifies if the scan is moving along this axis. If the start and
+% end location differ by more than 1 mm, it is "moving". If they differ by
+% less that 1 mm, then this axis is assumed to be stationary.
+% (2) If the axis is stationary, all of the values in the vector are set to
+% the mode of that vector.
+if (abs(mx(end)-mx(1)) < 0.1) 
+    mx = mode(mx)*ones(size(mx));
+end
+if (abs(my(end)-my(1)) < 0.1) 
+    my = mode(my)*ones(size(my));
+end
+if (abs(mz(end)-mz(1)) < 0.1) 
+    mz = mode(mz)*ones(size(mz));
+end
+
+% Identify the "moving" axis. For a diagonal profile, there is more than
+% one moving axis, but only one will be selected for the axis values
+% displayed on the graph.
 if (mz(1) ~= mz(end)); idm = mz; 
 elseif mx(1) ~= mx(end); idm = mx; 
 elseif my(1) ~= my(end); idm = my; 
 end
 
-%Check if any points of the measured data are at same location
-%Get rid of any measured points that are at repeat locations, this will
-%crash interpolation
+% Check if any points of the measured data are at same location
+% Get rid of any measured points that are at repeat locations, this will
+% crash interpolation
 not_rep_pts = [true; (idm(1:end-1)-idm(2:end)) ~= 0]; %not repeated points
 idm = idm(not_rep_pts); %remove repeats in the sample positions
 md = md(not_rep_pts); %remove repeats in measured data

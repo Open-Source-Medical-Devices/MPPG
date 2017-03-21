@@ -15,8 +15,9 @@ rows = double(info.Rows);
 deps = double(info.NumberOfFrames);
 
 % Establish Coordinate System [in cm]
-x = (info.ImagePositionPatient(1) + info.PixelSpacing(1)*(0:(cols-1)))/10 - offset(1);% - info.PixelSpacing(1)/2/10; 
-y = (info.ImagePositionPatient(2) + info.PixelSpacing(2)*(0:(rows-1)))/10 - offset(2);% - info.PixelSpacing(2)/2/10;
+% Note: PixelSpacing indices do not match ImagePositionPatient indicies.
+x = (info.ImagePositionPatient(1) + info.PixelSpacing(2)*(0:(cols-1)))/10 - offset(1);
+y = (info.ImagePositionPatient(2) + info.PixelSpacing(1)*(0:(rows-1)))/10 - offset(2);
 z = (info.ImagePositionPatient(3) + info.GridFrameOffsetVector)/10 - offset(3);
 
 % Remove 4th Dimension from Dose Grid
