@@ -114,7 +114,44 @@ not_rep_pts = [true; (idm(1:end-1)-idm(2:end)) ~= 0]; %not repeated points
 idm = idm(not_rep_pts); %remove repeats in the sample positions
 md = md(not_rep_pts); %remove repeats in measured data
 
-% Step 3: Resample for gamma analysis
+% Step 3: Check for non-uniform dose grid axes
+% Some TPS (e.g. ViewRay) exports DICOM-RT dose files that have
+% rounding errors in the (X,Y,Z) positions, resulting in a non-uniform dose
+% grid. The following code checks for this condition, determines how large
+% it is and resamples to a uniform spacing.
+
+% X
+x_max_space = max(cx(2:end)-cx(1:(end-1)));
+x_min_space = min(cx(2:end)-cx(1:(end-1)));
+if (x_max_space-x_min_space > 0.001) % is it larger than 1/100 mm?
+    h = msgbox(sprintf('%WARNING: The calculated x-axis values are not uniformly spaced. The maximum discrepancy is %f cm.',x_max_space-x_min_space));
+    cx = linspace(cx(1),cx(end),length(cx));
+elseif (x_max_space-x_min_space > 0.0) % is it larger than 0 mm?
+    cx = linspace(cx(1),cx(end),length(cx));
+end    
+
+% Y
+y_max_space = max(cy(2:end)-cy(1:(end-1)));
+y_min_space = min(cy(2:end)-cy(1:(end-1)));
+if (y_max_space-y_min_space > 0.001) % is it larger than 1/100 mm?
+    h = msgbox(sprintf('%WARNING: The calculated y-axis values are not uniformly spaced. The maximum discrepancy is %f cm.',y_max_space-y_min_space));
+    cy = linspace(cy(1),cy(end),length(cy));
+elseif (y_max_space-y_min_space > 0.0) % is it larger than 0 mm?
+    cy = linspace(cy(1),cy(end),length(cy));
+end
+
+% Z
+z_max_space = max(cz(2:end)-cz(1:(end-1)));
+z_min_space = min(cz(2:end)-cz(1:(end-1)));
+if (z_max_space-z_min_space > 0.001) % is it larger than 1/100 mm?
+    h = msgbox(sprintf('%WARNING: The calculated z-axis values are not uniformly spaced. The maximum discrepancy is %f cm.',z_max_space-z_min_space));
+    cz = linspace(cz(1),cz(end),length(cz));
+elseif (z_max_space-z_min_space > 0.0) % is it larger than 0 mm?
+    cz = linspace(cz(1),cz(end),length(cz));
+end
+
+
+% Step 4: Resample for gamma analysis
 
 % Resample indep with the same range but a finer spacing
 SAMP_PER_CM = 200; % samples per cm
